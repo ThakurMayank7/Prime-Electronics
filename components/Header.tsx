@@ -5,7 +5,7 @@ function Header() {
   return (
     <header className="flex justify-between items-center p-4 bg-white shadow-md">
       <div className="flex items-center justify-center">
-        <Image src="/images/logo_1.png" alt="Prime Electronics" height={30} width={100}/>
+        <Image src="/images/logo_1.png" alt="Prime Electronics" height={30} width={100} priority />
       </div>
 
 <div className="ml-auto flex gap-2">

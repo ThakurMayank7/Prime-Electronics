@@ -1,9 +1,21 @@
 import React from 'react'
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader} from './ui/sidebar'
 
-function Sidebar() {
+
+function MySidebar() {
   return (
-    <div>Sidebar</div>
+    <div className="md:hidden">
+        <Sidebar>
+      <SidebarHeader />
+      <SidebarContent>
+        <SidebarGroup />
+        a
+        <SidebarGroup />
+      </SidebarContent>
+      <SidebarFooter />
+    </Sidebar>
+      </div>
   )
 }
 
-export default Sidebar
+export default MySidebar

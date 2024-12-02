@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
+
 import Header from "@/components/Header";
+
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,10 +16,10 @@ export const metadata: Metadata = {
     other: [
       {
         rel: "manifest",
-        url: "./public/site.webmanifest", // Optional for PWA
+        url: "/site.webmanifest", // Corrected manifest path
       },
     ],
-  }
+  },
 };
 
 export default function RootLayout({
@@ -25,18 +27,19 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <html lang="en">
-      <body className="flex flex-col">
-        <Header/>
-        <main className="flex p-2 min-h-screen">
-        <Sidebar/>
-        <div className="flex-1 bg-gray-200 p-2">
+        <body
+          
+        >
+          <Header />
+          <div className="flex min-h-screen">
+            {/* <Sidebar/> */}
 
-        {children}
-        </div>
-        </main>
-      </body>
-    </html>
+            <div className="flex-1 p-4 bg-gray-100 overflow-y-auto scrollbar-hide">{children}</div>
+          </div>
+        </body>
+      </html>
   );
 }
