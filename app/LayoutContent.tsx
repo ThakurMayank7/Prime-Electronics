@@ -1,10 +1,9 @@
 "use client";
 
 import { PropsWithChildren } from "react";
-import {  usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Header from "@/components/Header";
 import AppSidebar from "@/components/AppSidebar";
-
 
 export default function LayoutContent({ children }: PropsWithChildren) {
   const pathname = usePathname();

@@ -1,7 +1,40 @@
+'use client'
+
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 
 export default function Home() {
+
+  const {user,loading}=useAuth();
+
+  const router=useRouter();
+
+  
+
+  useEffect(()=>{
+
+    if(user===null)
+    {
+      
+      router.push("/login");
+
+      
+    }
+  },[user,router])
+  
+  if(loading)
+  {
+    return <p>loading...</p>
+  }
+
+
+
+
+
+
   return (
     <div className="flex flex-col">
     <span className="bg-pallette1">abcde</span>
