@@ -1,10 +1,23 @@
 "use client";
 
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
+
+
+
 import Meteors from "@/components/ui/meteors";
 import { NeonGradientCard } from "@/components/ui/neon-gradient-card";
 // import { signOutUser } from "@/firebase/auth";
 import { useAuth } from "@/hooks/useAuth";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 // import { useRouter } from "next/navigation";
@@ -66,12 +79,78 @@ export default function Home() {
 
 
 
-<div className="flex items-center justify-center p-20 w-full border-2 border-black">
-  these are the brands
+{/* TODO  max-->7 */}
+
+<div className="flex items-center justify-center p-2 w-full border-2 border-black">
+  <Card>
+  <CardHeader>
+    <CardTitle className="text-xl font-bold text-center">Prestige</CardTitle>
+    <CardDescription>Buy a prestige product</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <p>Card Content</p>
+    <Image src="https://picsum.photos/200/200.jpg" alt="" width={20} height={20}
+    layout="responsive"
+    objectFit="cover"/>
+  </CardContent>
+  <CardFooter>
+    <p>Card Footer</p>
+  </CardFooter>
+</Card>
+  <Card>
+  <CardHeader>
+    <CardTitle className="text-xl font-bold text-center">Prestige</CardTitle>
+    <CardDescription>Buy a prestige product</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <p>Card Content</p>
+    <Image src="https://picsum.photos/200/200.jpg" alt="" width={20} height={20}
+    layout="responsive"
+    objectFit="cover"/>
+  </CardContent>
+  <CardFooter>
+    <p>Card Footer</p>
+  </CardFooter>
+</Card>
+  <Card>
+  <CardHeader>
+    <CardTitle className="text-xl font-bold text-center">Prestige</CardTitle>
+    <CardDescription>Buy a prestige product</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <p>Card Content</p>
+    <Image src="https://picsum.photos/200/200.jpg" alt="" width={20} height={20}
+    layout="responsive"
+    objectFit="cover"/>
+  </CardContent>
+  <CardFooter>
+    <p>Card Footer</p>
+  </CardFooter>
+</Card>
+  <Card>
+  <CardHeader>
+    <CardTitle className="text-xl font-bold text-center">Prestige</CardTitle>
+    <CardDescription>Buy a prestige product</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <p>Card Content</p>
+    <Image src="https://picsum.photos/200/200.jpg" alt="" width={20} height={20}
+    layout="responsive"
+    objectFit="cover"/>
+  </CardContent>
+  <CardFooter>
+    <p>Card Footer</p>
+  </CardFooter>
+</Card>
+
 </div>
 
 
+{/* TODO best collections */}
 
+<div>
+  
+</div>
 
 
 

@@ -4,10 +4,21 @@ import { Heart, MenuIcon, Package, ShoppingCart, User } from 'lucide-react'
 import React, { useState } from 'react'
 import { Separator } from './ui/separator';
 import Link from 'next/link';
+import { useAuth } from '@/hooks/useAuth';
 
 function AppSidebar() {
 
   const [expand,setExpand]=useState(true);
+
+  const {loading}=useAuth();
+  
+  
+
+  if(loading)
+  {
+    return null;
+
+  }
 
 
     const handleContraction=()=>{
