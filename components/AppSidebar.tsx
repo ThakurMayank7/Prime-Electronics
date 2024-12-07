@@ -29,7 +29,7 @@ function AppSidebar() {
 
 
   return (
-    <div className={`bg-pallette2 h-screen  
+    <div className={`bg-pallette2 h-auto  
     ${expand?"w-44":"w-16 flex flex-col items-center "}  
     p-2 hidden sm:block`}>  
 

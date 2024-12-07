@@ -4,6 +4,7 @@ import { PropsWithChildren } from "react";
 import { usePathname } from "next/navigation";
 import Header from "@/components/Header";
 import AppSidebar from "@/components/AppSidebar";
+import Footer from "@/components/Footer";
 
 export default function LayoutContent({ children }: PropsWithChildren) {
   const pathname = usePathname();
@@ -13,11 +14,12 @@ export default function LayoutContent({ children }: PropsWithChildren) {
   return (
     <>
       {!isLoginPage && <Header />}
-      <main className="flex">
+      <main className="flex flex-1">
         {!isLoginPage && <AppSidebar />}
 
-        <div className="flex-1 m-1 bg-gray-100">{children}</div>
+        <div className="m-1  bg-gray-100 flex-1 overflow-hidden">{children}</div>
       </main>
+      {!isLoginPage && <Footer/>}
     </>
   );
 }

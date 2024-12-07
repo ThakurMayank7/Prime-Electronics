@@ -1,23 +1,14 @@
 "use client";
 
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 
 
 
 
-import Meteors from "@/components/ui/meteors";
-import { NeonGradientCard } from "@/components/ui/neon-gradient-card";
+import Banner from "@/components/Banner";
 // import { signOutUser } from "@/firebase/auth";
 import { useAuth } from "@/hooks/useAuth";
-import Image from "next/image";
+
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 // import { useRouter } from "next/navigation";
@@ -39,16 +30,16 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col">
-      
+    <div className="flex flex-col flex-1">
+      <Banner/>
 
 
 
-<div className="w-full p-2 bg-background relative  flex-col items-center justify-center overflow-hidden">
+{/* <div className="flex-1 p-2 bg-background relative  flex-col items-center justify-center overflow-hidden">
     <Meteors/>
 
-<NeonGradientCard className="w-full  items-center justify-center text-center">
-  <div className="flex flex-col bg-gray-200 rounded p-4">
+ 
+  <div className="flex-1  flex flex-col bg-gray-200 rounded p-4 relative">
     <span className="text-4xl">
 
     Banner Content
@@ -61,96 +52,201 @@ export default function Home() {
 
     Banner Content
     </span>
-{/* <div className="relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl">
-      <Meteors number={30} />
-      <span className="pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-black to-gray-300/80 bg-clip-text text-center text-8xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10">
-        Meteors
-      </span>
-    </div> */}
+
 
 
   </div>
-      {/* <span className="pointer-events-none z-10 h-full whitespace-pre-wrap bg-gradient-to-br from-[#ff2975] from-35% to-[#00FFF1] bg-clip-text text-center text-6xl font-bold leading-none tracking-tighter text-transparent dark:drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">
-          Banner
-      </span> */}
-    </NeonGradientCard>
+      
 </div>
 
 
 
 
 {/* TODO  max-->7 */}
+{/*<div className="flex-1 flex flex-col  border-2 border-black ">
+<div className="flex flex-1">
 
-<div className="flex items-center justify-center p-2 w-full border-2 border-black">
+<span className="ml-2 text-2xl font-bold">Buy From Top Brands</span>
+    
+<button className="ml-auto flex justify-center items-center bg-slate-200 rounded-2xl mr-2 p-1 mt-1 hover:bg-slate-300">see more<ArrowRight/></button>
+
+</div>
+<div className="flex items-center justify-center p-2 flex-1">
   <Card>
   <CardHeader>
     <CardTitle className="text-xl font-bold text-center">Prestige</CardTitle>
-    <CardDescription>Buy a prestige product</CardDescription>
+    
   </CardHeader>
   <CardContent>
-    <p>Card Content</p>
+    
     <Image src="https://picsum.photos/200/200.jpg" alt="" width={20} height={20}
     layout="responsive"
     objectFit="cover"/>
   </CardContent>
   <CardFooter>
-    <p>Card Footer</p>
+    
   </CardFooter>
 </Card>
   <Card>
   <CardHeader>
     <CardTitle className="text-xl font-bold text-center">Prestige</CardTitle>
-    <CardDescription>Buy a prestige product</CardDescription>
+    
   </CardHeader>
   <CardContent>
-    <p>Card Content</p>
+    
     <Image src="https://picsum.photos/200/200.jpg" alt="" width={20} height={20}
     layout="responsive"
     objectFit="cover"/>
   </CardContent>
   <CardFooter>
-    <p>Card Footer</p>
+    
   </CardFooter>
 </Card>
   <Card>
   <CardHeader>
     <CardTitle className="text-xl font-bold text-center">Prestige</CardTitle>
-    <CardDescription>Buy a prestige product</CardDescription>
+    
   </CardHeader>
   <CardContent>
-    <p>Card Content</p>
+    
     <Image src="https://picsum.photos/200/200.jpg" alt="" width={20} height={20}
     layout="responsive"
     objectFit="cover"/>
   </CardContent>
   <CardFooter>
-    <p>Card Footer</p>
+    
   </CardFooter>
 </Card>
   <Card>
   <CardHeader>
     <CardTitle className="text-xl font-bold text-center">Prestige</CardTitle>
-    <CardDescription>Buy a prestige product</CardDescription>
+    
   </CardHeader>
   <CardContent>
-    <p>Card Content</p>
+    
     <Image src="https://picsum.photos/200/200.jpg" alt="" width={20} height={20}
     layout="responsive"
     objectFit="cover"/>
   </CardContent>
   <CardFooter>
-    <p>Card Footer</p>
+    
   </CardFooter>
 </Card>
 
 </div>
+
+</div>
+
+
+*/}
+
+
+
+
 
 
 {/* TODO best collections */}
 
-<div>
-  
+{/*<Separator className="my-0.5 flex-1"/>
+
+
+
+
+<div className="border-2 border-black  flex-1">
+<div className="flex">
+
+<span className="ml-2 text-2xl font-bold">Top Deals</span>
+    
+<button className="ml-auto flex justify-center items-center bg-slate-200 rounded-2xl mr-2 p-1 mt-1 hover:bg-slate-300">see more<ArrowRight/></button>
+
 </div>
+
+<div className="flex items-center justify-center p-2 flex-1">
+
+
+
+<Card>
+  <CardHeader>
+    <CardTitle className="text-xl font-bold text-center">Refridgerator</CardTitle>
+    
+  </CardHeader>
+  <CardContent>
+    
+    <Image src="https://picsum.photos/200/200.jpg" alt="" width={20} height={20}
+    layout="responsive"
+    objectFit="cover"/>
+  </CardContent>
+  <CardFooter>
+    
+  </CardFooter>
+</Card>
+<Card>
+  <CardHeader>
+    <CardTitle className="text-xl font-bold text-center">Refridgerator</CardTitle>
+    
+  </CardHeader>
+  <CardContent>
+    
+    <Image src="https://picsum.photos/200/200.jpg" alt="" width={20} height={20}
+    layout="responsive"
+    objectFit="cover"/>
+  </CardContent>
+  <CardFooter>
+    
+  </CardFooter>
+</Card>
+<Card>
+  <CardHeader>
+    <CardTitle className="text-xl font-bold text-center">Refridgerator</CardTitle>
+    
+  </CardHeader>
+  <CardContent>
+    
+    <Image src="https://picsum.photos/200/200.jpg" alt="" width={20} height={20}
+    layout="responsive"
+    objectFit="cover"/>
+  </CardContent>
+  <CardFooter>
+    
+  </CardFooter>
+</Card>
+<Card>
+  <CardHeader>
+    <CardTitle className="text-xl font-bold text-center">Washing Machine</CardTitle>
+    
+  </CardHeader>
+  <CardContent>
+    
+    <Image src="https://picsum.photos/200/200.jpg" alt="" width={20} height={20}
+    layout="responsive"
+    objectFit="cover"/>
+  </CardContent>
+  <CardFooter>
+    
+  </CardFooter>
+</Card>
+
+</div>
+
+</div>
+
+
+<Separator className="my-0.5"/>
+
+
+
+
+
+
+{/* TODO shop by category */}
+
+{/*<div className="p-1 border-2 border-black  flex-1">
+
+<div><Dot/>
+  <span>Electric Kettles</span>
+</div>
+
+</div> */}
 
 
 
