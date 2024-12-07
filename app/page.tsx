@@ -1,9 +1,12 @@
 'use client'
 
 import { Separator } from "@/components/ui/separator";
+import { signOutUser } from "@/firebase/auth";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+// import { useRouter } from "next/navigation";
+// import { useEffect } from "react";
 
 
 export default function Home() {
@@ -12,18 +15,21 @@ export default function Home() {
 
   const router=useRouter();
 
+
+
   
 
   useEffect(()=>{
 
-    if(user===null)
+    if(user===null && loading===false)
     {
-      
+
       router.push("/login");
 
       
     }
-  },[user,router])
+  },[user,router,loading])
+  
   
   if(loading)
   {
@@ -33,6 +39,7 @@ export default function Home() {
 
 
 
+  const sout=async()=>{signOutUser()}
 
 
   return (
@@ -49,6 +56,8 @@ export default function Home() {
     <span className="bg-RustOrange">abcde</span>
     <span className="bg-WarmGold">abcde</span>
     <Separator orientation='vertical' className='bg-black'/>
+    <p>{user?.displayName}</p>
+    <button className='p-2 bg-white text-xl' onClick={sout}>Sign Out</button>
     </div>
   );
 }

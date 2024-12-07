@@ -5,11 +5,43 @@ import Link from "next/link";
 import MobSidebar from "./MobSidebar";
 import { Filter } from "lucide-react";
 import { Separator } from "./ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useAuth } from "@/hooks/useAuth";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import ShineBorder from "./ui/shine-border";
+import { signOutUser } from "@/firebase/auth";
+
+
+
 
 function Header() {
   // const [opened,setOpened]=useState();
 
   // const headerSidebarAction=()=>{};
+
+  const {user,loading}=useAuth();
+  
+  
+
+  if(loading)
+  {
+    return <p>loading...</p>
+
+  }
+
+  const signOutHandler=async ()=>{
+    signOutUser();
+
+  };
+  
 
   return (
     <header className="bg-pallette1 p-4 flex flex-row items-center">
@@ -44,7 +76,57 @@ function Header() {
         </div>
       </div>
 
-      <div className="ml-auto text-white flex gap-1 mr-2">Profile</div>
+      <div className={`ml-auto text-white flex gap-1 mr-2 p-1 bg-pallette3 rounded-full hover:border-2`}>
+<DropdownMenu 
+// onOpenChange={()=>console.log("dropdown")}
+>
+  <DropdownMenuTrigger>
+    
+      <Avatar className="rounded-full">
+  <AvatarImage className="rounded-full" src={user?.photoURL || "https://github.com/shadcn.png"} alt="User Avatar"/>
+  <AvatarFallback>CN</AvatarFallback>
+</Avatar>
+    
+
+  </DropdownMenuTrigger>
+
+
+  <DropdownMenuContent>
+  <ShineBorder>
+    <DropdownMenuLabel className="">
+      <span className="text-xl flex justify-center">
+
+      {user?.displayName}
+      </span>
+      <span className="font-thin">
+        {user?.email}
+      </span>
+
+      </DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem className="hover:cursor-pointer">
+      <span className="text-lg">Profile</span>
+    </DropdownMenuItem>
+    <DropdownMenuItem className="hover:cursor-pointer">
+      <span className="text-lg">Orders</span>
+    </DropdownMenuItem>
+    <DropdownMenuItem className="hover:cursor-pointer">
+      <span className="text-lg">Wishlist</span>
+
+    </DropdownMenuItem>
+    <DropdownMenuItem className="hover:cursor-pointer">
+      <span className="text-lg">Cart</span>
+
+    </DropdownMenuItem>
+    <DropdownMenuItem>
+      <button className="bg-red-600 p-2 rounded font-bold text-white hover:text-base" onClick={signOutHandler}>Sign Out</button>
+    </DropdownMenuItem>
+  </ShineBorder>
+  </DropdownMenuContent>
+</DropdownMenu>
+
+
+      </div>
     </header>
   );
 }

@@ -11,24 +11,23 @@ export default {
   theme: {
   	extend: {
   		colors: {
-			pallette1:"#031716",
-			pallette2:"#032F30",
-			pallette3:"#0A7075",
-			pallette4:"#0C969C",
-			pallette5:"#6BA3BE",
-			pallette6:"#274D60",
-			MediumNeutral:"#A8B5C3",
-			DarkNeutral: "#1C2833",
-			SoftPeach: "#F2C1A6",
-RustOrange: "#D97348",
-WarmGold: "#F4B400",
-MintGreen: "#88D0B0",
-IcyBlue: "#A7D3E6",
-Lilac: "#B9A3D6",
-BrightCoral: "#FF6F61",
-ElectricCyan: "#20CFFF",
-Chartreuse: "#DFFF00",
-
+  			pallette1: '#031716',
+  			pallette2: '#032F30',
+  			pallette3: '#0A7075',
+  			pallette4: '#0C969C',
+  			pallette5: '#6BA3BE',
+  			pallette6: '#274D60',
+  			MediumNeutral: '#A8B5C3',
+  			DarkNeutral: '#1C2833',
+  			SoftPeach: '#F2C1A6',
+  			RustOrange: '#D97348',
+  			WarmGold: '#F4B400',
+  			MintGreen: '#88D0B0',
+  			IcyBlue: '#A7D3E6',
+  			Lilac: '#B9A3D6',
+  			BrightCoral: '#FF6F61',
+  			ElectricCyan: '#20CFFF',
+  			Chartreuse: '#DFFF00',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
@@ -74,6 +73,22 @@ Chartreuse: "#DFFF00",
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
+  		},
+  		animation: {
+  			shine: 'shine var(--duration) infinite linear'
+  		},
+  		keyframes: {
+  			shine: {
+  				'0%': {
+  					'background-position': '0% 0%'
+  				},
+  				'50%': {
+  					'background-position': '100% 100%'
+  				},
+  				to: {
+  					'background-position': '0% 0%'
+  				}
+  			}
   		}
   	}
   },
