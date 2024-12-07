@@ -19,6 +19,19 @@ import {
 import ShineBorder from "./ui/shine-border";
 import { signOutUser } from "@/firebase/auth";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
+
 
 
 
@@ -128,8 +141,33 @@ function Header() {
       </Link>
 
     </DropdownMenuItem>
-    <DropdownMenuItem>
-      <button className="bg-red-600 p-2 rounded font-bold text-white hover:text-base" onClick={signOutHandler}>Sign Out</button>
+    <DropdownMenuItem onSelect={(e)=>e.preventDefault()}>
+      
+      <AlertDialog>
+      <AlertDialogTrigger asChild>
+        
+
+<button className="bg-red-600 p-2 rounded font-bold text-white hover:text-base">Sign Out</button>
+        
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+             This action will signout this account on this device.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction className="bg-red-600 hover:bg-red-800" onClick={signOutHandler}>
+            
+              Confirm Sign Out
+            
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
     </DropdownMenuItem>
   </ShineBorder>
   </DropdownMenuContent>
