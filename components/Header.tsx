@@ -33,7 +33,7 @@ function Header() {
 
   if(loading)
   {
-    return <p>loading...</p>
+    return null;
 
   }
 
@@ -105,17 +105,27 @@ function Header() {
       </DropdownMenuLabel>
     <DropdownMenuSeparator />
     <DropdownMenuItem className="hover:cursor-pointer">
-      <span className="text-lg">Profile</span>
+        <Link href="/profile">
+        <span className="text-lg">
+        Profile
+        </span>
+        </Link>
     </DropdownMenuItem>
     <DropdownMenuItem className="hover:cursor-pointer">
+      <Link href="/orders">
       <span className="text-lg">Orders</span>
+      </Link>
     </DropdownMenuItem>
     <DropdownMenuItem className="hover:cursor-pointer">
+      <Link href="/wishlist">
       <span className="text-lg">Wishlist</span>
 
+      </Link>
     </DropdownMenuItem>
     <DropdownMenuItem className="hover:cursor-pointer">
+      <Link href="/cart">
       <span className="text-lg">Cart</span>
+      </Link>
 
     </DropdownMenuItem>
     <DropdownMenuItem>

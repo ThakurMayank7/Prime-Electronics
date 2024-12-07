@@ -3,6 +3,7 @@
 import { Heart, MenuIcon, Package, ShoppingCart, User } from 'lucide-react'
 import React, { useState } from 'react'
 import { Separator } from './ui/separator';
+import Link from 'next/link';
 
 function AppSidebar() {
 
@@ -37,22 +38,54 @@ function AppSidebar() {
 
 <div className={`space-y-1 ${expand?"":"flex flex-col items-center "}`}>
 
+<div>
+
+
+        <Link href="/profile">
         <div className="text-xl text- bg-pallette5 rounded p-2 font-semibold flex gap-2 items-center hover:bg-pallette6 hover:border-2 hover:cursor-pointer hover:text-white">
           <User/>
             <span className={`${expand?"":"hidden"}`}>Profile</span>
         </div>
+        </Link>
+
+</div>
+<div>
+
+
+        <Link href="/cart">
         <div className="text-xl text- bg-pallette5 rounded p-2  font-semibold flex gap-2 items-center hover:bg-pallette6 hover:border-2 hover:cursor-pointer hover:text-white">
-          <Package/>
-            <span className={`${expand?"":"hidden"}`}>Orders</span>
+        <ShoppingCart/>
+        <span className={`${expand?"":"hidden"}`}>Cart</span>
         </div>
+        </Link>
+</div>
+<div>
+
+
+<Link href="/wishlist">
+
         <div className="text-xl text- bg-pallette5 rounded p-2  font-semibold flex gap-2 items-center hover:bg-pallette6 hover:border-2 hover:cursor-pointer hover:text-white">
           <Heart/>
             <span className={`${expand?"":"hidden"}`}>Wishlist</span>
         </div>
+
+</Link>
+</div>
+
+
+<div>
+
+<Link href="/orders">
         <div className="text-xl text- bg-pallette5 rounded p-2 font-semibold flex gap-2 items-center hover:bg-pallette6 hover:border-2 hover:cursor-pointer hover:text-white">
-          <ShoppingCart/>
-            <span className={`${expand?"":"hidden"}`}>Cart</span>
+          
+            <Package/>
+            <span className={`${expand?"":"hidden"}`}>Orders</span>
         </div>
+</Link>
+</div>
+
+
+
 </div>
        
         {/* {expand.toString()} */}
