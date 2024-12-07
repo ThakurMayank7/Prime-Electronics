@@ -6,6 +6,9 @@
 
 
 import Banner from "@/components/Banner";
+import BestDeals from "@/components/BestDeals";
+import Brands from "@/components/Brands";
+import SearchByCategory from "@/components/SearchByCategory";
 // import { signOutUser } from "@/firebase/auth";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -33,7 +36,16 @@ export default function Home() {
     <div className="flex flex-col flex-1">
       <Banner/>
 
+      <hr className="my-0.5"/>
 
+      <Brands/>
+      <hr className="my-0.5"/>
+
+      <BestDeals/>
+
+      <hr className="my-0.5"/>
+
+      <SearchByCategory/>
 
 {/* <div className="flex-1 p-2 bg-background relative  flex-col items-center justify-center overflow-hidden">
     <Meteors/>
