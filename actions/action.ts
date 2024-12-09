@@ -2,8 +2,33 @@
 
 import { adminDb } from "@/firebase/admin";
 
-export async function createNewUser(email:string)
+type user={
+  uid: string;
+  email:string;
+  name:string;
+  dob:string;
+  contact:string;
+  gender:string;
+}
+
+
+export async function createNewUser(newUser:user):Promise<boolean>
 {
+  if (!newUser.uid) {
+    console.error("Error: User must have a UID.");
+    return false;
+  }
+  try
+  {
+    await adminDb.collection('users').doc(newUser.uid).set(newUser)
+    return true;
+  }
+  catch (error) {
+    console.error("Could'nt create a new user", error);
+    return false;
+  }
+
+
 
 }
 

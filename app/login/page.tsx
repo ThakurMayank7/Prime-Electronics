@@ -1,6 +1,6 @@
 'use client';
 
-import { checkExistingUser } from '@/actions/action';
+import { checkExistingUser, createNewUser } from '@/actions/action';
 import ShineBorder from '@/components/ui/shine-border';
 import { signInWithGoogle, signOutUser } from '@/firebase/auth'
 import { useAuth } from '@/hooks/useAuth';
@@ -24,7 +24,14 @@ import {
   AlertTitle,
 } from "@/components/ui/alert"
 
-
+type user={
+  uid: string;
+  email:string;
+  name:string;
+  dob:string;
+  contact:string;
+  gender:string;
+}
 
 
 export default function LoginPage() {
@@ -45,7 +52,7 @@ export default function LoginPage() {
 
 const [alert,setAlert] = useState<boolean>(false);
 
-
+const [userCreated,setUserCreated] = useState<boolean>(false);
 
 
     useEffect(()=>{
@@ -55,7 +62,22 @@ const [alert,setAlert] = useState<boolean>(false);
       {
         setAdditionalPage(false);
       }
-        if(user!==null && loading===false)
+
+
+
+
+
+
+        if(user!==null && loading===false && userCreated)
+      {
+        router.push('/');
+      }
+      
+      
+      
+      
+      
+          if(user!==null && loading===false)
         {
 
 
@@ -69,7 +91,7 @@ const [alert,setAlert] = useState<boolean>(false);
               if(existing===true)
               {
 
-
+router.push('/');
 
 
 console.log('user exists')
@@ -91,7 +113,7 @@ setAdditionalPage(true);
           checkUser();
 
         }
-    },[user,loading,router,additionalPage]);
+    },[user,loading,router,additionalPage,userCreated]);
 
 
     const log=async()=>{
@@ -101,11 +123,43 @@ setAdditionalPage(true);
 
 
 const handleCreateUser=
-(e: FormEvent<HTMLFormElement>)=>{
+async(e: FormEvent<HTMLFormElement>)=>{
   e.preventDefault();
 
 if(phone.length!==10)
   setAlert(true);
+
+if(date && phone.length===10 && gender)
+{
+
+  if(user?.displayName && user.email && user.uid )
+  {
+
+    const newUser:user={
+      name:user?.displayName,
+      email:user?.email,
+      contact:phone,
+      uid:user?.uid,
+      dob:date,
+      gender:gender,
+
+    }
+    const result:boolean=await createNewUser(newUser);
+    if(result===true)
+    {
+      setUserCreated(true);
+      router.push('/');
+    }
+    else{
+      console.error('Some Error Occurred in creating Account!')
+    }
+  }
+
+
+
+
+}
+
 
 
 

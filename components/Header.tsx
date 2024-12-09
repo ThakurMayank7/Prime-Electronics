@@ -96,7 +96,7 @@ function Header() {
   <DropdownMenuTrigger>
     
       <Avatar className="rounded-full">
-  <AvatarImage className="rounded-full" src={user?.photoURL || "https://github.com/shadcn.png"} alt="User Avatar"/>
+  <AvatarImage className="rounded-full" src={user?.photoURL || "https://github.com/shadcn.png"} alt={user?.displayName?.charAt(0) ?? "N/A"}/>
   <AvatarFallback>CN</AvatarFallback>
 </Avatar>
     
