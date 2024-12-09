@@ -2,11 +2,11 @@
 
 import { checkExistingUser } from '@/actions/action';
 import ShineBorder from '@/components/ui/shine-border';
-import { signInWithGoogle } from '@/firebase/auth'
+import { signInWithGoogle, signOutUser } from '@/firebase/auth'
 import { useAuth } from '@/hooks/useAuth';
 import { LogInIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   Select,
@@ -16,6 +16,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { AlertCircle } from "lucide-react"
+ 
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
+
 
 
 
@@ -26,20 +34,27 @@ export default function LoginPage() {
 
     const {user,loading}=useAuth();
 
-    const [additionalPage,setAdditionalPage]=useState<boolean>(true);
+    const [additionalPage,setAdditionalPage]=useState<boolean>(false);
 
 
-    // const [date, setDate] = useState<Date>()
+    const [date, setDate] = useState('');
 
+    const [phone,setPhone] = useState<string>('');
 
+    const [gender, setGender] = useState('');
 
-
+const [alert,setAlert] = useState<boolean>(false);
 
 
 
 
     useEffect(()=>{
 
+
+      if(user===null && loading===false && additionalPage===true)
+      {
+        setAdditionalPage(false);
+      }
         if(user!==null && loading===false)
         {
 
@@ -49,13 +64,22 @@ export default function LoginPage() {
 
             try{
 
-              const existing=await checkExistingUser(user.email);
+              const existing=await checkExistingUser(user.uid);
 
               if(existing===true)
               {
+
+
+
+
 console.log('user exists')
               }
               else{
+
+
+
+
+
 console.log('user do not exist')
 setAdditionalPage(true);
               }
@@ -66,32 +90,8 @@ setAdditionalPage(true);
           }
           checkUser();
 
-
-
-          // //TODO user data
-          // const existing=checkExistingUser();
-
-          // if(existing)
-          // {
-          //   //route to home page
-          // }
-          // else
-          // {
-            
-              
-              
-          //     // go to additional data
-
-
-          //   }
-
-
-          // }
-
-
-            // router.push("/");
         }
-    },[user,loading,router]);
+    },[user,loading,router,additionalPage]);
 
 
     const log=async()=>{
@@ -100,13 +100,32 @@ setAdditionalPage(true);
     }
 
 
-const handleCreateUser=()=>{}
+const handleCreateUser=
+(e: FormEvent<HTMLFormElement>)=>{
+  e.preventDefault();
+
+if(phone.length!==10)
+  setAlert(true);
 
 
 
+}
 
 
+const handleDateChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+  setDate(event.target.value);
+};
 
+const handleGenderChange = (value: string) => {
+  setGender(value); // Update state with selected value
+};
+
+
+const handleGoBack=()=>{
+
+  signOutUser();
+
+}
 
 
     
@@ -166,7 +185,12 @@ const handleCreateUser=()=>{}
 
 
       
-  <input className='border-2 border-black rounded p-1' type="date" />
+  <input 
+  className='border-2 border-black rounded p-1' type="date" 
+  value={date}
+onChange={handleDateChange}
+required
+  />
 
 
 
@@ -176,14 +200,14 @@ const handleCreateUser=()=>{}
   <span className='w-1/2 text-lg mr-1'>Gender :</span>
   <div className='border-2 border-black rounded'>
 
-  <Select>
+  <Select required onValueChange={handleGenderChange}>
   <SelectTrigger className="w-[180px]">
-    <SelectValue placeholder="Gender" />
+    <SelectValue placeholder="Enter your Gender" />
   </SelectTrigger>
   <SelectContent>
-    <SelectItem value="light">Male</SelectItem>
-    <SelectItem value="dark">Female</SelectItem>
-    <SelectItem value="system">Other</SelectItem>
+    <SelectItem value="male">Male</SelectItem>
+    <SelectItem value="female">Female</SelectItem>
+    <SelectItem value="other">Other</SelectItem>
   </SelectContent>
 </Select>
   </div>
@@ -191,13 +215,35 @@ const handleCreateUser=()=>{}
 </div>
 <div className='flex flex-row my-4'>
   <span className='w-1/2 text-lg mr-1'>Contact (IN) :</span>
-<input type="tel" className='w-fit ml-4 text-center border-2 border-black'/>
+<input 
+type="tel" 
+className='w-fit ml-4 text-center border-2 border-black rounded'
+required
+value={phone}
+onChange={(event: React.ChangeEvent<HTMLInputElement>)=>setPhone(event.target.value)}
+/>
 </div>
 
 <div className='flex flex-col items-center'>
 <br />
+
+{alert && 
+<>
+<Alert variant="destructive">
+      <AlertCircle className="h-4 w-4" />
+      <AlertTitle>Error</AlertTitle>
+      <AlertDescription>
+        Please enter a valid Mobile Number!
+      </AlertDescription>
+    </Alert>
+    <br />
+</>
+    }
+
+
+
 <div>
-<Checkbox/>
+<Checkbox required/>
 <span className='ml-1'>Accept Terms and Conditions</span>
 </div>
 <button className="p-2 bg-black text-white text-lg rounded" type="submit">Create Account</button>
@@ -206,6 +252,9 @@ const handleCreateUser=()=>{}
 
 
 </form>
+<button className="mt-4  p-1 border-2 hover:bg-gray-200 rounded" 
+onClick={handleGoBack}
+>Choose other Gmail</button>
 
     </div>
     }
