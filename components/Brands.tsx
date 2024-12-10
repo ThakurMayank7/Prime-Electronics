@@ -3,10 +3,17 @@ import React, { useEffect, useState } from "react";
 // import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { db } from "@/firebase/firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+
+
+type brand={
+  id: string;
+  name:string;
+}
+
 
 function Brands() {
-  const [featuredBrands, setFeaturedBrands] = useState<string[]>([]);
+  const [featuredBrands, setFeaturedBrands] = useState<brand[]>([]);
 
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -33,12 +40,37 @@ function Brands() {
 
 
 
-          // const brands = [];
+          try{
+
+            const ref=collection(db,'brands');
+
+
+            const brandsQuery=query(ref,where("__name__","in",brandIdsArray));
+
+            const querySnapshot=await getDocs(brandsQuery);
+
+            const brands:brand[]=querySnapshot.docs.map(doc =>({
+              id:doc.id,name:doc.data().name
+            }))
+
+            setFeaturedBrands(brands);
 
 
 
 
-          setFeaturedBrands(brandIdsArray);
+
+
+          }catch(err)
+          {
+            console.error('some error occurred', err);
+          }
+
+
+
+
+
+
+          // setFeaturedBrands(brandIdsArray);
         } else {
           console.log("nothing in featured brands");
         }
@@ -56,7 +88,7 @@ function Brands() {
   }
 
   return <div className="border-2 border-black rounded p-1">
-    {featuredBrands.map((brand) =><p key={brand}>{brand}</p>)}
+    {featuredBrands.map((b) =><p key={b.id}>{b.name}</p>)}
   </div>;
 }
 
