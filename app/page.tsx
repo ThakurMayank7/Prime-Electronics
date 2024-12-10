@@ -24,13 +24,16 @@ export default function Home() {
     return <p>loading...</p>;
   }
 
+
+
+
   return (
     <div className="flex flex-col flex-1">
       <Banner />
 
       <hr className="my-0.5" />
 
-      <Brands />
+      <Brands/>
       <hr className="my-0.5" />
 
       <BestDeals />
