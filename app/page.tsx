@@ -1,21 +1,13 @@
 "use client";
 
-
-
-
-
-
 import Banner from "@/components/Banner";
 import BestDeals from "@/components/BestDeals";
 import Brands from "@/components/Brands";
 import SearchByCategory from "@/components/SearchByCategory";
-// import { signOutUser } from "@/firebase/auth";
 import { useAuth } from "@/hooks/useAuth";
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-// import { useRouter } from "next/navigation";
-// import { useEffect } from "react";
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -34,23 +26,18 @@ export default function Home() {
 
   return (
     <div className="flex flex-col flex-1">
-      <Banner/>
+      <Banner />
 
-      <hr className="my-0.5"/>
+      <hr className="my-0.5" />
 
-      <Brands/>
-      <hr className="my-0.5"/>
+      <Brands />
+      <hr className="my-0.5" />
 
-      <BestDeals/>
+      <BestDeals />
 
-      <hr className="my-0.5"/>
+      <hr className="my-0.5" />
 
-      <SearchByCategory/>
-
-
-
-
-
+      <SearchByCategory />
     </div>
   );
 }
