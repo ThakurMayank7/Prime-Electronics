@@ -3,31 +3,67 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { CldImage } from 'next-cloudinary';
 
 const Carousel = () => {
   // provide keys with each element here
   const slides = [
-    <div
-      key="1"
-      className="flex flex-col items-center justify-center h-full w-full bg-blue-500 text-white"
-    >
-      <h1 className="text-2xl font-bold">Slide 1</h1>
-      <p className="mt-2">This is the first slide content.</p>
-    </div>,
-    <div
-      key="2"
-      className="flex flex-col items-center justify-center h-full w-full bg-green-500 text-white"
-    >
-      <h1 className="text-2xl font-bold">Slide 2</h1>
-      <p className="mt-2">This is the second slide content.</p>
-    </div>,
-    <div
-      key="3"
-      className="flex flex-col items-center justify-center h-full w-full bg-red-500 text-white"
-    >
-      <h1 className="text-2xl font-bold">Slide 3</h1>
-      <p className="mt-2">This is the third slide content.</p>
-    </div>,
+
+
+    <CldImage key="1"
+      src="cld-sample-2" // Use this sample image or upload your own via the Media Explorer
+      width="1400" // Transform the image: auto-crop to square aspect_ratio
+      height="500"
+      alt="banner"
+      crop={{
+        type: 'auto',
+        source: true
+      }}
+    />,
+    <CldImage key="2"
+      src="samples/balloons" // Use this sample image or upload your own via the Media Explorer
+      width="1400" // Transform the image: auto-crop to square aspect_ratio
+      height="500"
+      alt="banner"
+      crop={{
+        type: 'auto',
+        source: true
+      }}
+    />,
+    <CldImage key="3"
+      src="cld-sample-4" // Use this sample image or upload your own via the Media Explorer
+      width="1400" // Transform the image: auto-crop to square aspect_ratio
+      height="500"
+      alt="banner"
+      crop={{
+        type: 'auto',
+        source: true
+      }}
+    />
+
+
+
+    // <div
+    //   key="1"
+    //   className="flex flex-col items-center justify-center h-full w-full bg-blue-500 text-white"
+    // >
+    //   <h1 className="text-2xl font-bold">Slide 1</h1>
+    //   <p className="mt-2">This is the first slide content.</p>
+    // </div>,
+    // <div
+    //   key="2"
+    //   className="flex flex-col items-center justify-center h-full w-full bg-green-500 text-white"
+    // >
+    //   <h1 className="text-2xl font-bold">Slide 2</h1>
+    //   <p className="mt-2">This is the second slide content.</p>
+    // </div>,
+    // <div
+    //   key="3"
+    //   className="flex flex-col items-center justify-center h-full w-full bg-red-500 text-white"
+    // >
+    //   <h1 className="text-2xl font-bold">Slide 3</h1>
+    //   <p className="mt-2">This is the third slide content.</p>
+    // </div>,
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -45,7 +81,7 @@ const Carousel = () => {
   };
 
   return (
-    <div className="relative w-full h-64 overflow-hidden">
+    <div className="relative w-full h-auto overflow-hidden">
       {/* Slides Container */}
       <div
         className="flex transition-transform duration-500 ease-in-out h-full"

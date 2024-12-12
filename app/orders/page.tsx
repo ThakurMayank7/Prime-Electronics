@@ -3,6 +3,7 @@
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react'
+import { CldImage } from 'next-cloudinary';
 
 function Orders() {
 
@@ -23,7 +24,19 @@ function Orders() {
 
 
   return (
-    <div>Orders</div>
+    <div>
+      <CldImage
+      src="cld-sample-5" // Use this sample image or upload your own via the Media Explorer
+      width="1000" // Transform the image: auto-crop to square aspect_ratio
+      height="500"
+      alt='text'
+      quality="auto"
+      crop={{
+        type: 'auto',
+        source: true
+      }}
+    />
+    </div>
   )
 }
 
