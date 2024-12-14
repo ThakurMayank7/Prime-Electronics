@@ -2,6 +2,7 @@
 
 import Banner from "@/components/Banner";
 import BestDeals from "@/components/BestDeals";
+import Spinner from "@/components/BlocksSpinner";
 import Brands from "@/components/Brands";
 import SearchByCategory from "@/components/SearchByCategory";
 import { useAuth } from "@/hooks/useAuth";
@@ -21,7 +22,7 @@ export default function Home() {
   }, [user, router, loading]);
 
   if (loading) {
-    return <p>loading...</p>;
+    return <div className="h-screen w-screen items-center flex justify-center"><Spinner/></div>;
   }
 
 
