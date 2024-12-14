@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, SquareArrowUpRight } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CldImage } from "next-cloudinary";
 import {
   Card,
@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { useRouter } from "next/navigation";
 
 interface BannerData {
   id?: string;
@@ -44,6 +45,25 @@ interface Banners {
 }
 
 const Carousel = ({ banners }: Banners) => {
+
+  const router=useRouter();
+
+  // Memoizing the updateCounter function using useCallback
+  const updateCounter = useCallback(() => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === slides.length - 1 ? 0 : prevIndex + 1
+    );
+  }, []); // No dependencies, so the function reference is stable
+
+  useEffect(() => {
+    // Set interval to update counter every 10 seconds
+    const intervalId = setInterval(updateCounter, 6000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [updateCounter]); // `updateCounter` is included as a dependency
+
+
   const slides = banners.map((banner) => (
     <div key={banner.id} className="w-full h-full">
       <div className="flex flex-col lg:flex-row w-full h-full bg-gray-100">
@@ -61,7 +81,7 @@ const Carousel = ({ banners }: Banners) => {
           <p className="text-white text-xl lg:text-3xl font-mono font-semibold">
             {banner.bannerSecondaryHighlightedText}
           </p>
-          <button className="mt-6 px-6 py-3 bg-black text-white text-xl lg:text-2xl rounded-lg shadow-lg hover:bg-gray-800 transition flex items-center gap-2">
+          <button onClick={()=>{router.push(`/items/${banner.itemFeaturedId}`)}} className="mt-6 px-6 py-3 bg-black text-white text-xl lg:text-2xl rounded-lg shadow-lg hover:bg-gray-800 transition flex items-center gap-2">
             Buy Now
             <SquareArrowUpRight />
           </button>
