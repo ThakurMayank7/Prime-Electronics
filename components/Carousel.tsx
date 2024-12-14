@@ -12,24 +12,54 @@ import {
   CardTitle,
 } from "./ui/card";
 
-const Carousel = () => {
-  const keys = [1, 2, 3];
-  const slides = keys.map((key) => (
-    <div key={key} className="w-full">
+interface BannerData {
+  id?: string;
+  featuredItemDisplayImage?: string;
+  bannerTitle: string;
+  bannerTitleColor: string;
+  bannerDescription: string;
+  bannerDescriptionColor: string;
+  bannerHighlightedText: string;
+  bannerHighlightedTextColor: string;
+  bannerSecondaryHighlightedText: string;
+  bannerSecondaryHighlightedTextColor: string;
+  leftPanelColor: string;
+  rightPanelColor: string;
+  isNavigationButton: string; // "true" or "false"
+
+  presence: {
+    buttonPresent: boolean;
+    isItemFeatured: boolean;
+    isHighlightedPresent: boolean;
+    isSecondaryHighlightedPresent: boolean;
+    isDescriptionPresent: boolean;
+    isTitlePresent: boolean;
+  };
+
+  itemFeaturedId: string;
+}
+
+interface Banners {
+  banners: BannerData[];
+}
+
+const Carousel = ({ banners }: Banners) => {
+  const slides = banners.map((banner) => (
+    <div key={banner.id} className="w-full h-full">
       <div className="flex flex-col lg:flex-row w-full h-full bg-gray-100">
         {/* Left Section */}
         <div className="lg:w-2/3 w-full flex flex-col justify-center items-center bg-gradient-to-r from-teal-400 to-teal-600 p-10 text-center space-y-8">
           <h1 className="text-white text-5xl lg:text-7xl font-bold">
-            50% OFF!!!
+            {banner.bannerHighlightedText}
           </h1>
           <h2 className="text-white text-3xl lg:text-5xl font-serif">
-            AlienWare AB24
+            {banner.bannerTitle}
           </h2>
           <p className="text-white text-lg lg:text-2xl font-medium">
-            Best seller laptop of 2024!
+            {banner.bannerDescription}
           </p>
           <p className="text-white text-xl lg:text-3xl font-mono font-semibold">
-            Dont miss out on this deal!
+            {banner.bannerSecondaryHighlightedText}
           </p>
           <button className="mt-6 px-6 py-3 bg-black text-white text-xl lg:text-2xl rounded-lg shadow-lg hover:bg-gray-800 transition flex items-center gap-2">
             Buy Now
@@ -41,16 +71,14 @@ const Carousel = () => {
         <div className="lg:w-1/3 w-full bg-teal-800 flex items-center justify-center p-6">
           <Card className="w-2/3 flex flex-col items-center">
             <CardHeader>
-              <CardTitle>AlienWare AB24</CardTitle>
+              <CardTitle>{banner.bannerTitle}</CardTitle>
               <CardDescription className="break-words w-fit">
-                Best seller laptop of 2024!
+                {banner.bannerDescription}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <CldImage
-                src={
-                  "primeElectronics/items/displayImages/cc6uk5pxkstv8p015z3i"
-                } // Use this sample image or upload your own via the Media Explorer
+                src={banner.featuredItemDisplayImage || "samples/balloons"} // Use this sample image or upload your own via the Media Explorer
                 width="200" // Transform the image: auto-crop to square aspect_ratio
                 height="200"
                 alt="banner"
