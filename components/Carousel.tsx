@@ -45,25 +45,9 @@ interface Banners {
 }
 
 const Carousel = ({ banners }: Banners) => {
-
-  const router=useRouter();
+  const router = useRouter();
 
   // Memoizing the updateCounter function using useCallback
-  const updateCounter = useCallback(() => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === slides.length - 1 ? 0 : prevIndex + 1
-    );
-  }, []); // No dependencies, so the function reference is stable
-
-  useEffect(() => {
-    // Set interval to update counter every 10 seconds
-    const intervalId = setInterval(updateCounter, 6000);
-
-    // Cleanup interval on component unmount
-    return () => clearInterval(intervalId);
-  }, [updateCounter]); // `updateCounter` is included as a dependency
-
-
   const slides = banners.map((banner) => (
     <div key={banner.id} className="w-full h-full">
       <div className="flex flex-col lg:flex-row w-full h-full bg-gray-100">
@@ -81,7 +65,12 @@ const Carousel = ({ banners }: Banners) => {
           <p className="text-white text-xl lg:text-3xl font-mono font-semibold">
             {banner.bannerSecondaryHighlightedText}
           </p>
-          <button onClick={()=>{router.push(`/items/${banner.itemFeaturedId}`)}} className="mt-6 px-6 py-3 bg-black text-white text-xl lg:text-2xl rounded-lg shadow-lg hover:bg-gray-800 transition flex items-center gap-2">
+          <button
+            onClick={() => {
+              router.push(`/items/${banner.itemFeaturedId}`);
+            }}
+            className="mt-6 px-6 py-3 bg-black text-white text-xl lg:text-2xl rounded-lg shadow-lg hover:bg-gray-800 transition flex items-center gap-2"
+          >
             Buy Now
             <SquareArrowUpRight />
           </button>
@@ -113,6 +102,20 @@ const Carousel = ({ banners }: Banners) => {
       </div>
     </div>
   ));
+  const updateCounter = useCallback(() => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === slides.length - 1 ? 0 : prevIndex + 1
+    );
+  }, [slides.length]); // No dependencies, so the function reference is stable
+
+  useEffect(() => {
+    // Set interval to update counter every 10 seconds
+    const intervalId = setInterval(updateCounter, 6000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [updateCounter]); // `updateCounter` is included as a dependency
+
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const goToPrevious = () => {
