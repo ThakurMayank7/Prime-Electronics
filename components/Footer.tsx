@@ -6,7 +6,7 @@ function Footer() {
     <footer className="bg-gray-800 text-white py-12 ">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
-          {/* Column 1: Company Info */}
+          
           <div>
             <h3 className="text-xl font-semibold mb-4">Company</h3>
             <ul className="space-y-3">
@@ -18,7 +18,6 @@ function Footer() {
             </ul>
           </div>
 
-          {/* Column 2: Customer Support */}
           <div>
             <h3 className="text-xl font-semibold mb-4">Customer Support</h3>
             <ul className="space-y-3">
@@ -29,10 +28,8 @@ function Footer() {
             </ul>
           </div>
 
-          {/* Column 3: Social Media Links */}
           <div>
             <div>
-              {/* Developer Credits */}
         <div className="mt-12 border-t border-gray-700 pt-6 text-center">
           <p className="text-sm text-gray-400">
             &copy; {new Date().getFullYear()} Prime Electronics. All rights reserved. 
@@ -44,7 +41,7 @@ function Footer() {
           </p>
         </div>
             </div>
-            <h3 className="text-xl font-semibold mb-4">Follow Us</h3>
+            <h3 className="text-xl font-semibold mb-4">Follow Me</h3>
             <div className="flex space-x-4">
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:text-teal-500">
                 <i className="fab fa-facebook-f"></i> Github
