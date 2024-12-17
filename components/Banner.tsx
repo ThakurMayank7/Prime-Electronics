@@ -94,6 +94,11 @@ function Banner() {
     fetchData();
   }, []);
 
+  if(data.length===0)
+  {
+    return null;
+  }
+
   return (
     <div className="border-2 border-black rounded p-1">
       {loading ? (
