@@ -17,9 +17,11 @@ export default function LayoutContent({ children }: PropsWithChildren) {
       <main className="flex flex-1">
         {!isLoginPage && <AppSidebar />}
 
-        <div className="m-1  bg-gray-100 flex-1 overflow-hidden">{children}</div>
+        <div className="m-1  bg-gray-100 flex-1 overflow-hidden">
+          {children}
+        </div>
       </main>
-      {!isLoginPage && <Footer/>}
+      {!isLoginPage && <Footer />}
     </>
   );
 }
