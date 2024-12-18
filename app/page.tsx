@@ -22,11 +22,12 @@ export default function Home() {
   }, [user, router, loading]);
 
   if (loading) {
-    return <div className="h-screen w-screen items-center flex justify-center"><Spinner/></div>;
+    return (
+      <div className="h-screen w-screen items-center flex justify-center">
+        <Spinner />
+      </div>
+    );
   }
-
-
-
 
   return (
     <div className="flex flex-col flex-1">
@@ -34,7 +35,7 @@ export default function Home() {
 
       <hr className="my-0.5" />
 
-      <Brands/>
+      <Brands />
       <hr className="my-0.5" />
 
       <BestDeals />
