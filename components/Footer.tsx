@@ -101,7 +101,7 @@ function Footer() {
               </a>
             </div>
             <div className="mt-6 border-t border-gray-700 pt-6 text-center">
-              <p className="text-sm text-gray-400">
+              <div className="text-sm text-gray-400">
                 &copy; {new Date().getFullYear()} Prime Electronics. All rights
                 reserved.
                 <p>
@@ -119,7 +119,7 @@ function Footer() {
                     Mayank Singh
                   </a>
                 </p>
-              </p>
+              </div>
             </div>
           </div>
         </div>
