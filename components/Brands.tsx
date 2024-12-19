@@ -1,102 +1,110 @@
-import React, { useEffect, useState } from "react";
+"use client";
 
+import { db } from "@/firebase/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-import { db } from "@/firebase/firebaseConfig";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
-import Image from "next/image";
+import { CldImage } from "next-cloudinary";
+import { useRouter } from "next/navigation";
 
 type brand = {
   id: string;
-  name: string;
+  displayImageId: string;
+  title: string;
 };
 
 function Brands() {
-  const [featuredBrands, setFeaturedBrands] = useState<brand[]>([]);
+  const router = useRouter();
 
-  const [loading, setLoading] = useState<boolean>(true);
+  const [brands, setBrands] = useState<brand[]>([]);
 
   useEffect(() => {
     try {
-      setLoading(true);
+      const fetchData = async () => {
+        const snap = await getDoc(doc(db, "featured", "brands"));
 
-      const getResult = async () => {
-        const brandsRef = doc(db, "featured", "brands");
-        const brandsSnap = await getDoc(brandsRef);
+        if (snap.exists()) {
+          const result = snap.data();
 
-        if (brandsSnap.exists()) {
-          const data = brandsSnap.data();
+          // Convert fields into desired format
+          const fetchedData: { position: string; brand: string }[] =
+            Object.keys(result)
+              .map((key) => ({
+                position: key,
+                brand: result[key],
+              }))
+              .sort((a, b) => Number(a.position) - Number(b.position));
 
-          const brandIdsArray = [];
+          const finalData: brand[] = [];
 
-          //  field id is string
-          for (let i = 0; i < 8; i++) {
-            if (data[i.toString()]) {
-              brandIdsArray.push(data[i.toString()]);
+          for (let i = 0; i < fetchedData.length; i++) {
+            const itemSnap = await getDoc(
+              doc(db, "brands", fetchedData[i].brand)
+            );
+
+            if (itemSnap.exists()) {
+              const { itemName, logoRef } = itemSnap.data();
+
+              finalData.push({
+                id: fetchedData[i].brand,
+                displayImageId: logoRef,
+                title: itemName,
+              });
             }
           }
 
-          try {
-            const ref = collection(db, "brands");
-
-            const brandsQuery = query(
-              ref,
-              where("__name__", "in", brandIdsArray)
-            );
-
-            const querySnapshot = await getDocs(brandsQuery);
-
-            const brands: brand[] = querySnapshot.docs.map((doc) => ({
-              id: doc.id,
-              name: doc.data().name,
-            }));
-
-            setFeaturedBrands(brands);
-          } catch (err) {
-            console.error("some error occurred", err);
-          }
-
-          // setFeaturedBrands(brandIdsArray);
-        } else {
-          console.log("nothing in featured brands");
+          setBrands(finalData);
         }
       };
-      getResult();
-    } catch (error) {
-      console.error("some error occurred:", error);
-    } finally {
-      setLoading(false);
+
+      fetchData();
+    } catch (err) {
+      console.error(err);
     }
   }, []);
 
-  if (loading) {
-    return <div>loading...</div>;
-  }
-
   return (
-    <div className="border-2 border-black rounded p-1 flex flex-row">
-      {featuredBrands.map((b) => (
-        <Card key={b.id}>
-          <CardHeader>
-            <CardTitle>{b.name}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Image src="https://picsum.photos/200" alt={b.name} width={160} height={160} layout="intrinsic"/>
-          </CardContent>
-        </Card>
-      ))}
+    <div className="border-2 border-black rounded p-1 flex flex-col">
+      <h2 className="text-4xl font-serif">Check out The Biggest Brands!</h2>
+      <div className="flex flex-row">
+        {brands.map((brand) => (
+          <Card
+            key={brand.id}
+            onClick={() => router.push(`/brands/${brand.id}`)}
+            className="hover:cursor-pointer"
+          >
+            <CardHeader>
+              <CardTitle>{brand.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CldImage
+                src={brand.displayImageId || "samples/balloons"}
+                width="200"
+                height="200"
+                alt="banner"
+                crop={{
+                  type: "auto",
+                  source: true,
+                }}
+              />
+            </CardContent>
+            <CardFooter>
+              <button
+                className="bg-teal-600 p-2 rounded text-white hover:bg-teal-700"
+                onClick={() => router.push(`/items/${brand.id}`)}
+              >
+                Check Out!
+              </button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 }

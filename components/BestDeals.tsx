@@ -85,8 +85,8 @@ function BestDeals() {
             </CardHeader>
             <CardContent>
               <CldImage
-                src={item.displayImageId || "samples/balloons"} // Use this sample image or upload your own via the Media Explorer
-                width="200" // Transform the image: auto-crop to square aspect_ratio
+                src={item.displayImageId || "samples/balloons"}
+                width="200"
                 height="200"
                 alt="banner"
                 crop={{
