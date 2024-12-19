@@ -70,14 +70,14 @@ function Brands() {
   }, []);
 
   return (
-    <div className="border-2 border-black rounded p-1 flex flex-col">
-      <h2 className="text-4xl font-serif">Check out The Biggest Brands!</h2>
+    <div className="border-2 border-black rounded p-1 flex flex-col bg-cyan-600">
+      <h2 className="text-4xl font-serif my-2">Check out The Biggest Brands!</h2>
       <div className="flex flex-row">
         {brands.map((brand) => (
           <Card
             key={brand.id}
             onClick={() => router.push(`/brands/${brand.id}`)}
-            className="hover:cursor-pointer"
+            className="hover:cursor-pointer bg-teal-100"
           >
             <CardHeader>
               <CardTitle>{brand.title}</CardTitle>
@@ -97,7 +97,7 @@ function Brands() {
             <CardFooter>
               <button
                 className="bg-teal-600 p-2 rounded text-white hover:bg-teal-700"
-                onClick={() => router.push(`/items/${brand.id}`)}
+                onClick={() => router.push(`/brands/${brand.id}`)}
               >
                 Check Out!
               </button>
