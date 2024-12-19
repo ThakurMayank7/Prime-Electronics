@@ -75,7 +75,11 @@ function BestDeals() {
       <h2 className="text-4xl font-serif">Our Best Deals!</h2>
       <div className="flex flex-row">
         {items.map((item) => (
-          <Card key={item.id}>
+          <Card
+            key={item.id}
+            onClick={() => router.push(`/items/${item.id}`)}
+            className="hover:cursor-pointer"
+          >
             <CardHeader>
               <CardTitle>{item.title}</CardTitle>
             </CardHeader>
