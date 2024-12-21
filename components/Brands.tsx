@@ -71,7 +71,9 @@ function Brands() {
 
   return (
     <div className="border-2 border-black rounded p-1 flex flex-col bg-cyan-600">
-      <h2 className="text-4xl font-serif my-2">Check out The Biggest Brands!</h2>
+      <h2 className="text-4xl font-serif my-2">
+        Check out The Biggest Brands!
+      </h2>
       <div className="flex flex-row">
         {brands.map((brand) => (
           <Card
