@@ -1,3 +1,6 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
 
 interface SearchBarProps {
@@ -8,15 +11,17 @@ const SearchBar: React.FC<SearchBarProps> = ({ fetchSuggestions }) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [highlightedIndex, setHighlightedIndex] = useState(-1); // For keyboard navigation
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (query.trim()) {
         fetchSuggestions(query).then((data) => {
           setSuggestions(data);
-          setHighlightedIndex(-1); // Reset highlight on new fetch
+          setHighlightedIndex(-1);
         });
       } else {
         setSuggestions([]);
@@ -45,8 +50,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ fetchSuggestions }) => {
     } else if (query !== null && e.key === "Enter") {
       console.log("query", query);
       if (inputRef.current) {
-        inputRef.current.blur(); // Programmatically removes focus from the input
+        inputRef.current.blur();
       }
+      router.push(`/search/${query}`);
     }
   };
 
