@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 interface SearchBarProps {
   fetchSuggestions: (query: string) => Promise<string[]>;
@@ -9,6 +9,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ fetchSuggestions }) => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1); // For keyboard navigation
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -28,22 +29,24 @@ const SearchBar: React.FC<SearchBarProps> = ({ fetchSuggestions }) => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowDown") {
-      // Move highlight down
       setHighlightedIndex((prevIndex) =>
         prevIndex < suggestions.length - 1 ? prevIndex + 1 : 0
       );
     } else if (e.key === "ArrowUp") {
-      // Move highlight up
       setHighlightedIndex((prevIndex) =>
         prevIndex > 0 ? prevIndex - 1 : suggestions.length - 1
       );
     } else if (e.key === "Enter" && highlightedIndex >= 0) {
-      // Select highlighted suggestion
+      console.log("highlightedIndex", highlightedIndex);
       setQuery(suggestions[highlightedIndex]);
       setShowSuggestions(false);
     } else if (e.key === "Escape") {
-      // Close suggestions
       setShowSuggestions(false);
+    } else if (query !== null && e.key === "Enter") {
+      console.log("query", query);
+      if (inputRef.current) {
+        inputRef.current.blur(); // Programmatically removes focus from the input
+      }
     }
   };
 
@@ -56,6 +59,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ fetchSuggestions }) => {
     <div className="text-black relative w-[300px]">
       <input
         type="text"
+        ref={inputRef}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => setShowSuggestions(true)}
