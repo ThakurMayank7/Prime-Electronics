@@ -1,10 +1,7 @@
 "use client";
 
 import Link from "next/link";
-// import React, { useState } from 'react'
 import MobSidebar from "./MobSidebar";
-import { Filter } from "lucide-react";
-import { Separator } from "./ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -33,9 +30,6 @@ import {
 import SearchBar from "./SearchBar";
 
 function Header() {
-  // const [opened,setOpened]=useState();
-
-  // const headerSidebarAction=()=>{};
 
   const { user, loading } = useAuth();
 
