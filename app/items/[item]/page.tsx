@@ -4,13 +4,34 @@ import { Button } from "@/components/ui/button";
 import { CldImage } from "next-cloudinary";
 import { usePathname } from "next/navigation";
 import React from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+import Spinner from "@/components/BlocksSpinner";
 
 function ItemPage() {
-  // Get the current pathname from usePathname
   const pathname = usePathname();
 
   // Extract the itemId from the pathname (e.g., /items/[item])
   const itemId = pathname?.split("/")[2]; // Assuming the path is /items/[item]
+
+  const { user, loading } = useAuth();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user === null && loading === false) {
+      router.push("/login");
+    }
+  }, [user, router, loading]);
+
+  if (loading) {
+    return (
+      <div className="h-screen w-screen items-center flex justify-center">
+        <Spinner />
+      </div>
+    );
+  }
 
   const item = {
     title: "AlienWare AB24",
