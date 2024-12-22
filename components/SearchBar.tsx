@@ -1,5 +1,6 @@
 "use client";
 
+import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
 
@@ -48,11 +49,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ fetchSuggestions }) => {
     } else if (e.key === "Escape") {
       setShowSuggestions(false);
     } else if (query !== null && e.key === "Enter") {
-      console.log("query", query);
       if (inputRef.current) {
         inputRef.current.blur();
       }
-      router.push(`/search/${query}`);
+      handleSearch();
     }
   };
 
@@ -61,8 +61,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ fetchSuggestions }) => {
     setShowSuggestions(false);
   };
 
+  const handleSearch = () => {
+    if (query !== null) router.push(`/search/${query}`);
+    // console.log("query", query);
+  };
+
   return (
-    <div className="text-black relative w-[300px]">
+    <div className="text-teal-800 relative w-[300px] bg-teal-100 flex-row items-center justify-between flex rounded p-0.5">
       <input
         type="text"
         ref={inputRef}
@@ -72,10 +77,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ fetchSuggestions }) => {
         onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
         onKeyDown={handleKeyDown}
         placeholder="Search..."
-        className="w-full p-2 border border-gray-300 rounded"
+        className="p-2 border border-gray-300 rounded bg-transparent w-full"
       />
       {showSuggestions && suggestions.length > 0 && (
-        <ul className="absolute w-full bg-white border border-gray-300 rounded z-10 max-h-[150px] overflow-y-auto list-none m-0 p-0">
+        <ul className="absolute w-full bg-white border border-gray-300 rounded z-10 max-h-[150px] overflow-y-auto list-none m-0 p-0 mt-48">
           {suggestions.map((suggestion, index) => (
             <li
               key={index}
@@ -89,6 +94,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ fetchSuggestions }) => {
           ))}
         </ul>
       )}
+      <Search className="mx-2" onClick={handleSearch} />
     </div>
   );
 };

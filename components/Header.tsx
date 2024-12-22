@@ -55,7 +55,7 @@ function Header() {
         <Link href="/">Prime Electronics</Link>
       </span>
 
-      <div className="text-white mx-auto p-1 rounded border-2 border-pallette3 ">
+      <div className="text-white mx-auto rounded p-0.5 border-2 border-pallette3 ">
         <SearchBar fetchSuggestions={mockFetchSuggestions}/>
       </div>
 

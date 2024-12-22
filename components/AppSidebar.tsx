@@ -24,7 +24,7 @@ function AppSidebar() {
 
   const handleContraction = () => {
     setExpand(!expand);
-    console.log(expand);
+    // console.log(expand);
   };
 
   return (
