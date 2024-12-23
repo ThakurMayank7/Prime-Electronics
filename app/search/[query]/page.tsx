@@ -72,16 +72,10 @@ function SearchPage() {
 
   const fetchData = async ({ items, brands, categories }: SearchResults) => {
     try {
-      console.log("fetching data");
-      console.log(items);
-
       const itemsDataToAdd: ItemData[] = [];
-      console.log(items);
       if (items) {
         for (const itemId of items) {
-          console.log("id", itemId);
           const itemSnap = await getDoc(doc(db, "items", itemId));
-          // console.log(itemSnap);
           if (itemSnap.exists()) {
             itemsDataToAdd.push({
               id: itemSnap.id,
@@ -92,7 +86,6 @@ function SearchPage() {
           }
         }
       }
-      console.log("itemsDataToAdd", itemsDataToAdd);
       setItemsData(itemsDataToAdd);
     } catch (e) {
       console.log(e);
@@ -108,10 +101,10 @@ function SearchPage() {
   }
   return (
     <div>
-      {itemsData?.map((item, index) => (
-        <div key={index}>
+      {itemsData?.map((item) => (
+        <div key={item.id}>
           {item.name}
-          {index}
+          {item.id}
           <Card>
             <CardHeader>
               <CardTitle>Card Title</CardTitle>
