@@ -32,6 +32,11 @@ function SearchPage() {
         itemsSnap.forEach((doc) => {
           console.log(doc.id, " => ", doc.data());
         });
+        const brandsQuery=query(collection(db,"brands"), where("category", "array-contains", queryParameter));
+        const brandsSnap=await getDocs(brandsQuery);
+        brandsSnap.forEach((doc) => {
+          console.log(doc.id, " => ", doc.data());
+        });
       }
       fetchSearchResults();
     }
