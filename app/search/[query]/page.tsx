@@ -5,6 +5,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Spinner from "@/components/BlocksSpinner";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "@/firebase/firebaseConfig";
 
 function SearchPage() {
   const { user, loading } = useAuth();
@@ -12,13 +14,35 @@ function SearchPage() {
   const router = useRouter();
 
   const pathname = usePathname();
-  const query = pathname?.split("/")[2]; // Assuming the path is /search/[query]
+  const queryParameter = pathname?.split("/")[2]; // Assuming the path is /search/[query]
 
   useEffect(() => {
     if (user === null && loading === false) {
       router.push("/login");
     }
   }, [user, router, loading]);
+
+  useEffect(()=>{
+    try
+    {
+      const fetchSearchResults = async () => {
+
+        const itemsQuery=query(collection(db,"items"), where("category", "array-contains", queryParameter));
+        const itemsSnap=await getDocs(itemsQuery);
+        itemsSnap.forEach((doc) => {
+          console.log(doc.id, " => ", doc.data());
+        });
+      }
+      fetchSearchResults();
+    }
+    catch(err)
+    {
+      console.log(err)
+    }
+    
+      
+    
+  },[queryParameter])
 
   if (loading) {
     return (
@@ -29,7 +53,7 @@ function SearchPage() {
   }
   return (
     <div>
-      {query}
+      {queryParameter}
       <p>as</p>
     </div>
   );

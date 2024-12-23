@@ -87,7 +87,7 @@ const Carousel = ({ banners }: Banners) => {
             </CardHeader>
             <CardContent>
               <CldImage
-                src={banner.featuredItemDisplayImage || "samples/balloons"} // Use this sample image or upload your own via the Media Explorer
+                src={banner.featuredItemDisplayImage || "samples/balloons"}
                 width="200" // Transform the image: auto-crop to square aspect_ratio
                 height="200"
                 alt="banner"
@@ -106,10 +106,10 @@ const Carousel = ({ banners }: Banners) => {
     setCurrentIndex((prevIndex) =>
       prevIndex === slides.length - 1 ? 0 : prevIndex + 1
     );
-  }, [slides.length]); // No dependencies, so the function reference is stable
+  }, [slides.length]);
 
   useEffect(() => {
-    // Set interval to update counter every 10 seconds
+    // Set interval to update counter every 6 seconds
     const intervalId = setInterval(updateCounter, 6000);
 
     // Cleanup interval on component unmount
