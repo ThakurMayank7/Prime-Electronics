@@ -6,26 +6,26 @@ import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
 
-type suggestion = {
+interface Suggestion {
   display: string;
   value: string;
   type: string;
-};
+}
 
-type query = {
+interface Query {
   value: string;
   type: string;
-};
+}
 
 const SearchBar: React.FC = () => {
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<suggestion[]>([]);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [suggestionData, setSuggestionData] = useState<suggestion[]>([]);
+  const [suggestionData, setSuggestionData] = useState<Suggestion[]>([]);
 
-  const [sendQuery, setSendQuery] = useState<query>({ value: "", type: "" });
+  const [sendQuery, setSendQuery] = useState<Query>({ value: "", type: "" });
 
   const router = useRouter();
 
@@ -34,20 +34,15 @@ const SearchBar: React.FC = () => {
       const fetchSuggestions = async () => {
         const itemsSnap = await getDoc(doc(db, "data", "items"));
 
-        const fetchedSuggestions: suggestion[] = [];
+        const fetchedSuggestions: Suggestion[] = [];
 
         if (itemsSnap.exists()) {
-          console.log(itemsSnap.data());
-
           for (const index in itemsSnap.data()) {
-            console.log(index + "=>" + itemsSnap.data()[index]);
-
-            const temporarySuggestion: suggestion = {
+            const temporarySuggestion: Suggestion = {
               display: itemsSnap.data()[index],
               value: index,
               type: "item",
             };
-            console.log(temporarySuggestion);
             fetchedSuggestions.push(temporarySuggestion);
           }
         }
@@ -55,14 +50,11 @@ const SearchBar: React.FC = () => {
 
         if (brandsSnap.exists()) {
           for (const index in brandsSnap.data()) {
-            console.log(index + "=>" + brandsSnap.data()[index]);
-
-            const temporarySuggestion: suggestion = {
+            const temporarySuggestion: Suggestion = {
               display: brandsSnap.data()[index],
               value: index,
               type: "brand",
             };
-            console.log(temporarySuggestion);
             fetchedSuggestions.push(temporarySuggestion);
           }
         }
@@ -70,14 +62,11 @@ const SearchBar: React.FC = () => {
 
         if (categoriesSnap.exists()) {
           for (const index in categoriesSnap.data()) {
-            console.log(index + "=>" + categoriesSnap.data()[index]);
-
-            const temporarySuggestion: suggestion = {
+            const temporarySuggestion: Suggestion = {
               display: categoriesSnap.data()[index],
               value: index,
               type: "category",
             };
-            console.log(temporarySuggestion);
             fetchedSuggestions.push(temporarySuggestion);
           }
         }
@@ -91,18 +80,14 @@ const SearchBar: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const fetchSuggestions = (query: string): suggestion[] => {
-      const suggest: suggestion[] = [];
-      suggestionData.forEach((s: suggestion) => {
+    const fetchSuggestions = (query: string): Suggestion[] => {
+      const suggest: Suggestion[] = [];
+      suggestionData.forEach((s: Suggestion) => {
         if (s.display.toLowerCase().includes(query.toLowerCase())) {
           suggest.push(s);
         }
       });
       return suggest;
-
-      // return suggest.filter((item) =>
-      //   item.toLowerCase().includes(query.toLowerCase())
-      // );
     };
     const timer = setTimeout(() => {
       if (query.trim()) {
@@ -154,7 +139,7 @@ const SearchBar: React.FC = () => {
   };
 
   const handleSearch = () => {
-    const url = `/search/${query}`;
+    let url = `/search/${query}`;
 
     let checking: boolean = false;
     for (const s of suggestions) {
@@ -167,11 +152,33 @@ const SearchBar: React.FC = () => {
     if (sendQuery.type !== "" && sendQuery.value !== "" && checking) {
       router.push(`${url}?type=${sendQuery.type}&value=${sendQuery.value}`);
     } else if (query !== "") {
+      const suggestItems: string[] = [];
+      const suggestBrands: string[] = [];
+      const suggestCategories: string[] = [];
+      suggestionData.forEach((s: Suggestion) => {
+        if (s.display.toLowerCase().includes(query.toLowerCase())) {
+          switch (s.type) {
+            case "item":
+              suggestItems.push(s.value);
+              break;
+            case "brand":
+              suggestBrands.push(s.value);
+              break;
+            case "category":
+              suggestCategories.push(s.value);
+              break;
+          }
+        }
+      });
+
+      url += `?items=${suggestItems.join(",")}`;
+
+      url += `&brands=${suggestBrands.join(",")}`;
+
+      url += `&categories=${suggestCategories.join(",")}`;
+
       router.push(url);
     }
-
-    console.log("sendQuery", sendQuery);
-    console.log("query", query);
   };
 
   return (

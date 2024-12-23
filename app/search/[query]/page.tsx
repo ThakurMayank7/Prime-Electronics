@@ -5,8 +5,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import Spinner from "@/components/BlocksSpinner";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "@/firebase/firebaseConfig";
+// import { collection, getDocs, query, where } from "firebase/firestore";
+// import { db } from "@/firebase/firebaseConfig";
 
 function SearchPage() {
   const { user, loading } = useAuth();
@@ -19,6 +19,11 @@ function SearchPage() {
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
   const value = searchParams.get("value");
+  const searchResults={
+    items:searchParams.get("items"),
+    brands:searchParams.get("brands"),
+    categories:searchParams.get("categories")
+  }
 
   useEffect(() => {
     if (user === null && loading === false) {
@@ -40,31 +45,31 @@ function SearchPage() {
     }
   }, [type, value, router]);
 
-  useEffect(() => {
-    try {
-      const fetchSearchResults = async () => {
-        const itemsQuery = query(
-          collection(db, "items"),
-          where("category", "array-contains", queryParameter)
-        );
-        const itemsSnap = await getDocs(itemsQuery);
-        itemsSnap.forEach((doc) => {
-          console.log(doc.id, " => ", doc.data());
-        });
-        const brandsQuery = query(
-          collection(db, "brands"),
-          where("category", "array-contains", queryParameter)
-        );
-        const brandsSnap = await getDocs(brandsQuery);
-        brandsSnap.forEach((doc) => {
-          console.log(doc.id, " => ", doc.data());
-        });
-      };
-      fetchSearchResults();
-    } catch (err) {
-      console.log(err);
-    }
-  }, [queryParameter]);
+  // useEffect(() => {
+  //   try {
+  //     const fetchSearchResults = async () => {
+  //       const itemsQuery = query(
+  //         collection(db, "items"),
+  //         where("category", "array-contains", queryParameter)
+  //       );
+  //       const itemsSnap = await getDocs(itemsQuery);
+  //       itemsSnap.forEach((doc) => {
+  //         console.log(doc.id, " => ", doc.data());
+  //       });
+  //       const brandsQuery = query(
+  //         collection(db, "brands"),
+  //         where("category", "array-contains", queryParameter)
+  //       );
+  //       const brandsSnap = await getDocs(brandsQuery);
+  //       brandsSnap.forEach((doc) => {
+  //         console.log(doc.id, " => ", doc.data());
+  //       });
+  //     };
+  //     fetchSearchResults();
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }, [queryParameter]);
 
   if (loading) {
     return (
@@ -81,6 +86,12 @@ function SearchPage() {
       {type}
       <br />
       {value}
+      <br />
+      {searchResults.items}
+      <br />
+      {searchResults.brands}
+      <br />
+      {searchResults.categories}
     </div>
   );
 }
