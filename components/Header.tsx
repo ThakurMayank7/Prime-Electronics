@@ -40,13 +40,7 @@ function Header() {
   const signOutHandler = async () => {
     signOutUser();
   };
-  const mockFetchSuggestions = async (query: string): Promise<string[]> => {
-    // Replace this with your API call
-    const suggestions = ["Apple", "Banana", "Cherry", "Date", "Elderberry"];
-    return suggestions.filter((item) =>
-      item.toLowerCase().includes(query.toLowerCase())
-    );
-  };
+  
 
   return (
     <header className="bg-pallette1 p-4 flex flex-row items-center">
@@ -56,7 +50,7 @@ function Header() {
       </span>
 
       <div className="text-white mx-auto rounded p-0.5 border-2 border-pallette3 ">
-        <SearchBar fetchSuggestions={mockFetchSuggestions}/>
+        <SearchBar/>
       </div>
 
       <div

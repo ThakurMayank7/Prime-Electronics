@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import Spinner from "@/components/BlocksSpinner";
 import { collection, getDocs, query, where } from "firebase/firestore";
@@ -15,6 +15,9 @@ function SearchPage() {
 
   const pathname = usePathname();
   const queryParameter = pathname?.split("/")[2]; // Assuming the path is /search/[query]
+
+  const searchParams = useSearchParams();
+  const name = searchParams.get('name'); // Retrieves the 'name' query parameter
 
   useEffect(() => {
     if (user === null && loading === false) {
@@ -60,6 +63,9 @@ function SearchPage() {
     <div>
       {queryParameter}
       <p>as</p>
+      {pathname}
+      <br />
+      {name}
     </div>
   );
 }

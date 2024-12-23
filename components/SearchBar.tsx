@@ -1,29 +1,111 @@
 "use client";
 
+import { db } from "@/firebase/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
 
-interface SearchBarProps {
-  fetchSuggestions: (query: string) => Promise<string[]>;
-}
+type suggestion = {
+  display: string;
+  value: string;
+  type: string;
+};
 
-const SearchBar: React.FC<SearchBarProps> = ({ fetchSuggestions }) => {
+const SearchBar: React.FC = () => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [suggestionData, setSuggestionData] = useState<string[]>([]);
+
+  // const [mockSuggestionData, setMockSuggestionData] = useState<suggestion[]>(
+  // []
+  // );
 
   const router = useRouter();
 
   useEffect(() => {
+    try {
+      const fetchSuggestions = async () => {
+        const itemsSnap = await getDoc(doc(db, "data", "items"));
+
+        const fetchedSuggestions: suggestion[] = [];
+
+        if (itemsSnap.exists()) {
+          console.log(itemsSnap.data());
+
+          for (const index in itemsSnap.data()) {
+            console.log(index + "=>" + itemsSnap.data()[index]);
+
+            const temporarySuggestion: suggestion = {
+              display: itemsSnap.data()[index],
+              value: index,
+              type: "item",
+            };
+            console.log(temporarySuggestion);
+            fetchedSuggestions.push(temporarySuggestion);
+          }
+        }
+        const brandsSnap = await getDoc(doc(db, "data", "brands"));
+
+        if (brandsSnap.exists()) {
+          // console.log(brandsSnap.data());
+
+          for (const index in brandsSnap.data()) {
+            console.log(index + "=>" + brandsSnap.data()[index]);
+
+            const temporarySuggestion: suggestion = {
+              display: brandsSnap.data()[index],
+              value: index,
+              type: "brand",
+            };
+            console.log(temporarySuggestion);
+            fetchedSuggestions.push(temporarySuggestion);
+          }
+        }
+        const categoriesSnap = await getDoc(doc(db, "data", "Category"));
+
+        if (categoriesSnap.exists()) {
+          for (const index in categoriesSnap.data()) {
+            console.log(index + "=>" + categoriesSnap.data()[index]);
+
+            const temporarySuggestion: suggestion = {
+              display: categoriesSnap.data()[index],
+              value: index,
+              type: "category",
+            };
+            console.log(temporarySuggestion);
+            fetchedSuggestions.push(temporarySuggestion);
+          }
+        }
+
+        console.log(fetchedSuggestions);
+
+        const suggestedStrings = fetchedSuggestions.map((s:suggestion) => s.display);
+
+        setSuggestionData(suggestedStrings);
+        // setSuggestionData(["Apple", "Banana", "Cherry", "Date", "Elderberry"]);
+      };
+      fetchSuggestions();
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchSuggestions = (query: string): string[] => {
+      // Replace this with your API call
+
+      return suggestionData.filter((item) =>
+        item.toLowerCase().includes(query.toLowerCase())
+      );
+    };
     const timer = setTimeout(() => {
       if (query.trim()) {
-        fetchSuggestions(query).then((data) => {
-          setSuggestions(data);
-          setHighlightedIndex(-1);
-        });
+        setSuggestions(fetchSuggestions(query));
+        setHighlightedIndex(-1);
       } else {
         setSuggestions([]);
         setHighlightedIndex(-1);
@@ -31,7 +113,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ fetchSuggestions }) => {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [query, fetchSuggestions]);
+  }, [query, suggestionData]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowDown") {
@@ -62,7 +144,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ fetchSuggestions }) => {
   };
 
   const handleSearch = () => {
-    if (query !== null) router.push(`/search/${query}`);
+    if (query !== null) router.push(`/search/${query}?name=John%20Doe`);
     // console.log("query", query);
   };
 
