@@ -12,13 +12,20 @@ type suggestion = {
   type: string;
 };
 
+type query = {
+  value: string;
+  type: string;
+};
+
 const SearchBar: React.FC = () => {
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestions, setSuggestions] = useState<suggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [suggestionData, setSuggestionData] = useState<string[]>([]);
+  const [suggestionData, setSuggestionData] = useState<suggestion[]>([]);
+
+  const [sendQuery, setSendQuery] = useState<query>({ value: "", type: "" });
 
   // const [mockSuggestionData, setMockSuggestionData] = useState<suggestion[]>(
   // []
@@ -83,9 +90,9 @@ const SearchBar: React.FC = () => {
 
         console.log(fetchedSuggestions);
 
-        const suggestedStrings = fetchedSuggestions.map((s:suggestion) => s.display);
+        // const suggestedStrings = fetchedSuggestions.map((s:suggestion) => s.display);
 
-        setSuggestionData(suggestedStrings);
+        setSuggestionData(fetchedSuggestions);
         // setSuggestionData(["Apple", "Banana", "Cherry", "Date", "Elderberry"]);
       };
       fetchSuggestions();
@@ -95,12 +102,22 @@ const SearchBar: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const fetchSuggestions = (query: string): string[] => {
-      // Replace this with your API call
+    const fetchSuggestions = (query: string): suggestion[] => {
 
-      return suggestionData.filter((item) =>
-        item.toLowerCase().includes(query.toLowerCase())
-      );
+      const suggest: suggestion[]=[];
+      suggestionData.forEach((s: suggestion) => {
+        if(s.display.toLowerCase().includes(query.toLowerCase()))
+        {
+          suggest.push(s);
+          // console.log(s.display);
+        }
+      });
+      return  suggest;
+
+
+      // return suggest.filter((item) =>
+      //   item.toLowerCase().includes(query.toLowerCase())
+      // );
     };
     const timer = setTimeout(() => {
       if (query.trim()) {
@@ -126,8 +143,14 @@ const SearchBar: React.FC = () => {
       );
     } else if (e.key === "Enter" && highlightedIndex >= 0) {
       console.log("highlightedIndex", highlightedIndex);
-      setQuery(suggestions[highlightedIndex]);
+      setQuery(suggestions.at(highlightedIndex)?.display || "");
       setShowSuggestions(false);
+      setSendQuery({
+        value: suggestionData[highlightedIndex].value,
+        type: suggestionData.at(highlightedIndex)?.type||"",
+      });
+          console.log("sendQuery", sendQuery);
+
     } else if (e.key === "Escape") {
       setShowSuggestions(false);
     } else if (query !== null && e.key === "Enter") {
@@ -141,11 +164,17 @@ const SearchBar: React.FC = () => {
   const handleSuggestionClick = (suggestion: string) => {
     setQuery(suggestion);
     setShowSuggestions(false);
+    setSendQuery({
+      value: suggestionData[highlightedIndex].value,
+      type: suggestionData.at(highlightedIndex)?.type||"",
+    });
+    console.log("sendQuery", sendQuery);
   };
 
   const handleSearch = () => {
     if (query !== null) router.push(`/search/${query}?name=John%20Doe`);
     // console.log("query", query);
+    console.log("sendQuery", sendQuery);
   };
 
   return (
@@ -166,12 +195,12 @@ const SearchBar: React.FC = () => {
           {suggestions.map((suggestion, index) => (
             <li
               key={index}
-              onClick={() => handleSuggestionClick(suggestion)}
+              onClick={() => handleSuggestionClick(suggestion.display)}
               className={`p-2 cursor-pointer ${
                 index === highlightedIndex ? "bg-gray-200" : ""
               }`}
             >
-              {suggestion}
+              {suggestion.display}
             </li>
           ))}
         </ul>
