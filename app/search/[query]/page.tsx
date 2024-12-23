@@ -1,29 +1,27 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import Spinner from "@/components/BlocksSpinner";
 // import { collection, getDocs, query, where } from "firebase/firestore";
 // import { db } from "@/firebase/firebaseConfig";
+
+interface SearchResults {
+  items?: string[];
+  brands?: string[];
+  categories?: string[];
+}
 
 function SearchPage() {
   const { user, loading } = useAuth();
 
   const router = useRouter();
 
-  const pathname = usePathname();
-  const queryParameter = pathname?.split("/")[2]; // Assuming the path is /search/[query]
-
   const searchParams = useSearchParams();
-  const type = searchParams.get("type");
-  const value = searchParams.get("value");
-  const searchResults={
-    items:searchParams.get("items"),
-    brands:searchParams.get("brands"),
-    categories:searchParams.get("categories")
-  }
+
+  const [searchResults, setSearchResults] = useState<SearchResults>({});
 
   useEffect(() => {
     if (user === null && loading === false) {
@@ -32,6 +30,12 @@ function SearchPage() {
   }, [user, router, loading]);
 
   useEffect(() => {
+    const type = searchParams.get("type");
+    const value = searchParams.get("value");
+    const items = searchParams.get("items")?.split(",") || undefined;
+    const brands = searchParams.get("brands")?.split(",") || undefined;
+    const categories = searchParams.get("categories")?.split(",") || undefined;
+
     if (type && value) {
       let url: string = "";
       if (type === "item") {
@@ -43,33 +47,8 @@ function SearchPage() {
       }
       router.push(url);
     }
-  }, [type, value, router]);
-
-  // useEffect(() => {
-  //   try {
-  //     const fetchSearchResults = async () => {
-  //       const itemsQuery = query(
-  //         collection(db, "items"),
-  //         where("category", "array-contains", queryParameter)
-  //       );
-  //       const itemsSnap = await getDocs(itemsQuery);
-  //       itemsSnap.forEach((doc) => {
-  //         console.log(doc.id, " => ", doc.data());
-  //       });
-  //       const brandsQuery = query(
-  //         collection(db, "brands"),
-  //         where("category", "array-contains", queryParameter)
-  //       );
-  //       const brandsSnap = await getDocs(brandsQuery);
-  //       brandsSnap.forEach((doc) => {
-  //         console.log(doc.id, " => ", doc.data());
-  //       });
-  //     };
-  //     fetchSearchResults();
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }, [queryParameter]);
+    setSearchResults({ items, brands, categories });
+  }, [router, searchParams]);
 
   if (loading) {
     return (
@@ -80,13 +59,6 @@ function SearchPage() {
   }
   return (
     <div>
-      {queryParameter}
-      <p>as</p>
-      <br />
-      {type}
-      <br />
-      {value}
-      <br />
       {searchResults.items}
       <br />
       {searchResults.brands}
