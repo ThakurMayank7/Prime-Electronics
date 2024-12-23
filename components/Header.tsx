@@ -30,7 +30,6 @@ import {
 import SearchBar from "./SearchBar";
 
 function Header() {
-
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -40,7 +39,6 @@ function Header() {
   const signOutHandler = async () => {
     signOutUser();
   };
-  
 
   return (
     <header className="bg-pallette1 p-4 flex flex-row items-center">
@@ -50,7 +48,7 @@ function Header() {
       </span>
 
       <div className="text-white mx-auto rounded p-0.5 border-2 border-pallette3 ">
-        <SearchBar/>
+        <SearchBar />
       </div>
 
       <div

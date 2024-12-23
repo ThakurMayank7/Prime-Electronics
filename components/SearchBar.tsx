@@ -27,10 +27,6 @@ const SearchBar: React.FC = () => {
 
   const [sendQuery, setSendQuery] = useState<query>({ value: "", type: "" });
 
-  // const [mockSuggestionData, setMockSuggestionData] = useState<suggestion[]>(
-  // []
-  // );
-
   const router = useRouter();
 
   useEffect(() => {
@@ -58,8 +54,6 @@ const SearchBar: React.FC = () => {
         const brandsSnap = await getDoc(doc(db, "data", "brands"));
 
         if (brandsSnap.exists()) {
-          // console.log(brandsSnap.data());
-
           for (const index in brandsSnap.data()) {
             console.log(index + "=>" + brandsSnap.data()[index]);
 
@@ -88,12 +82,7 @@ const SearchBar: React.FC = () => {
           }
         }
 
-        console.log(fetchedSuggestions);
-
-        // const suggestedStrings = fetchedSuggestions.map((s:suggestion) => s.display);
-
         setSuggestionData(fetchedSuggestions);
-        // setSuggestionData(["Apple", "Banana", "Cherry", "Date", "Elderberry"]);
       };
       fetchSuggestions();
     } catch (err) {
@@ -103,17 +92,13 @@ const SearchBar: React.FC = () => {
 
   useEffect(() => {
     const fetchSuggestions = (query: string): suggestion[] => {
-
-      const suggest: suggestion[]=[];
+      const suggest: suggestion[] = [];
       suggestionData.forEach((s: suggestion) => {
-        if(s.display.toLowerCase().includes(query.toLowerCase()))
-        {
+        if (s.display.toLowerCase().includes(query.toLowerCase())) {
           suggest.push(s);
-          // console.log(s.display);
         }
       });
-      return  suggest;
-
+      return suggest;
 
       // return suggest.filter((item) =>
       //   item.toLowerCase().includes(query.toLowerCase())
@@ -126,6 +111,7 @@ const SearchBar: React.FC = () => {
       } else {
         setSuggestions([]);
         setHighlightedIndex(-1);
+        setSendQuery({ value: "", type: "" });
       }
     }, 300);
 
@@ -142,15 +128,12 @@ const SearchBar: React.FC = () => {
         prevIndex > 0 ? prevIndex - 1 : suggestions.length - 1
       );
     } else if (e.key === "Enter" && highlightedIndex >= 0) {
-      console.log("highlightedIndex", highlightedIndex);
       setQuery(suggestions.at(highlightedIndex)?.display || "");
       setShowSuggestions(false);
       setSendQuery({
-        value: suggestionData[highlightedIndex].value,
-        type: suggestionData.at(highlightedIndex)?.type||"",
+        value: suggestions.at(highlightedIndex)?.value || "",
+        type: suggestions.at(highlightedIndex)?.type || "",
       });
-          console.log("sendQuery", sendQuery);
-
     } else if (e.key === "Escape") {
       setShowSuggestions(false);
     } else if (query !== null && e.key === "Enter") {
@@ -165,16 +148,30 @@ const SearchBar: React.FC = () => {
     setQuery(suggestion);
     setShowSuggestions(false);
     setSendQuery({
-      value: suggestionData[highlightedIndex].value,
-      type: suggestionData.at(highlightedIndex)?.type||"",
+      value: suggestions.at(highlightedIndex)?.value || "",
+      type: suggestions.at(highlightedIndex)?.type || "",
     });
-    console.log("sendQuery", sendQuery);
   };
 
   const handleSearch = () => {
-    if (query !== null) router.push(`/search/${query}?name=John%20Doe`);
-    // console.log("query", query);
+    const url = `/search/${query}`;
+
+    let checking: boolean = false;
+    for (const s of suggestions) {
+      if (s.display === query) {
+        checking = true;
+        break;
+      }
+    }
+
+    if (sendQuery.type !== "" && sendQuery.value !== "" && checking) {
+      router.push(`${url}?type=${sendQuery.type}&value=${sendQuery.value}`);
+    } else if (query !== "") {
+      router.push(url);
+    }
+
     console.log("sendQuery", sendQuery);
+    console.log("query", query);
   };
 
   return (

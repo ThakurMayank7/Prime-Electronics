@@ -17,7 +17,8 @@ function SearchPage() {
   const queryParameter = pathname?.split("/")[2]; // Assuming the path is /search/[query]
 
   const searchParams = useSearchParams();
-  const name = searchParams.get('name'); // Retrieves the 'name' query parameter
+  const type = searchParams.get("type");
+  const value = searchParams.get("value");
 
   useEffect(() => {
     if (user === null && loading === false) {
@@ -25,32 +26,45 @@ function SearchPage() {
     }
   }, [user, router, loading]);
 
-  useEffect(()=>{
-    try
-    {
-      const fetchSearchResults = async () => {
+  useEffect(() => {
+    if (type && value) {
+      let url: string = "";
+      if (type === "item") {
+        url = `/items/${value}`;
+      } else if (type === "brand") {
+        url = `/brands/${value}`;
+      } else if (type === "category") {
+        url = `/category/${value}`;
+      }
+      router.push(url);
+    }
+  }, [type, value, router]);
 
-        const itemsQuery=query(collection(db,"items"), where("category", "array-contains", queryParameter));
-        const itemsSnap=await getDocs(itemsQuery);
+  useEffect(() => {
+    try {
+      const fetchSearchResults = async () => {
+        const itemsQuery = query(
+          collection(db, "items"),
+          where("category", "array-contains", queryParameter)
+        );
+        const itemsSnap = await getDocs(itemsQuery);
         itemsSnap.forEach((doc) => {
           console.log(doc.id, " => ", doc.data());
         });
-        const brandsQuery=query(collection(db,"brands"), where("category", "array-contains", queryParameter));
-        const brandsSnap=await getDocs(brandsQuery);
+        const brandsQuery = query(
+          collection(db, "brands"),
+          where("category", "array-contains", queryParameter)
+        );
+        const brandsSnap = await getDocs(brandsQuery);
         brandsSnap.forEach((doc) => {
           console.log(doc.id, " => ", doc.data());
         });
-      }
+      };
       fetchSearchResults();
+    } catch (err) {
+      console.log(err);
     }
-    catch(err)
-    {
-      console.log(err)
-    }
-    
-      
-    
-  },[queryParameter])
+  }, [queryParameter]);
 
   if (loading) {
     return (
@@ -63,9 +77,10 @@ function SearchPage() {
     <div>
       {queryParameter}
       <p>as</p>
-      {pathname}
       <br />
-      {name}
+      {type}
+      <br />
+      {value}
     </div>
   );
 }
