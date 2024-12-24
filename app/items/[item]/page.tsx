@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { CldImage } from "next-cloudinary";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
@@ -14,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Minus, Plus, ShoppingCart } from "lucide-react";
 
 interface ItemDetails {
   id: string;
@@ -176,13 +176,21 @@ function ItemPage() {
             </div>
 
             {/* Call to Action */}
-            <div className="mt-8 flex space-x-4">
-              <Button className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-blue-700">
-                Add to Cart
-              </Button>
-              <Button className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-green-700">
+            <div className="mt-8 flex space-y-4 flex-col">
+              <div className="bg-pallette3 text-white px-6 py-3 rounded-lg shadow-lg flex">
+                <button className=""><Minus/></button>
+                <Separator orientation="vertical" className="h-6 mr-auto ml-2"/>
+                <button className="mx-auto flex flex-row gap-2">
+                <ShoppingCart />
+                Item in Cart (1)
+                </button>
+                <Separator orientation="vertical" className="h-6 ml-auto mr-2"/>
+                <button className=""><Plus/></button>
+              </div>
+              <br />
+              <button className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-green-700">
                 Buy Now
-              </Button>
+              </button>
             </div>
           </div>
         </div>
