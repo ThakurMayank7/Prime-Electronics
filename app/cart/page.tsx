@@ -7,6 +7,13 @@ import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+interface ItemDetail {
+  displayImage: string;
+  itemName: string;
+  itemDescription: string;
+  itemId: string;
+}
+
 function Cart() {
   const { user, loading } = useAuth();
 
@@ -15,6 +22,8 @@ function Cart() {
   const [cartItems, setCartItems] = useState<
     { item: string; number: number }[]
   >([]);
+
+  const [itemsDetails, setItemsDetails] = useState<ItemDetail[]>([]);
 
   useEffect(() => {
     if (user === null && loading === false) {
@@ -45,6 +54,25 @@ function Cart() {
           }
         };
         fetchCartItems();
+
+        const fetchCartItemsDetails = async () => {
+          const itemsDetailsToPush: ItemDetail[] = [];
+          cartItems.forEach(async (cartItem) => {
+            const itemSnap = await getDoc(doc(db, "items", cartItem.item));
+            if (itemSnap.exists()) {
+              const itemData = itemSnap.data();
+              const temp: ItemDetail = {
+                itemName: itemData.itemName,
+                itemDescription: itemData.itemDescription,
+                displayImage: itemData.displayImageRef,
+                itemId: cartItem.item,
+              };
+              itemsDetailsToPush.push(temp);
+            }
+          });
+          setItemsDetails(itemsDetailsToPush);
+        };
+        fetchCartItemsDetails();
       } catch (err) {
         console.error(err);
       }
