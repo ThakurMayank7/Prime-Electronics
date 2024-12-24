@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { CldImage } from "next-cloudinary";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
@@ -13,6 +13,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { Separator } from "@/components/ui/separator";
 
 import { FaStar, FaRegStar } from "react-icons/fa";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface ItemDetails {
   id: string;
@@ -24,47 +25,21 @@ interface ItemDetails {
   images: string[];
   brandId: string;
   category: string[];
+  reviews: {
+    uid: string;
+    date: string;
+    rating: number;
+    review: string;
+  }[];
+}
+
+interface ReviewUserDetails {
+  uid: string;
+  displayName: string;
+  photoURL: string;
 }
 
 function ItemPage() {
-  const reviews = [
-    {
-      id: 0,
-      uid: 1,
-      rating: 5,
-      review: "This is a great product",
-      date: "2021-09-01",
-    },
-    {
-      id: 1,
-      uid: 2,
-      rating: 4,
-      review: "This is a good product",
-      date: "2021-09-01",
-    },
-    {
-      id: 2,
-      uid: 3,
-      rating: 3,
-      review: "This is a okay product",
-      date: "2021-09-01",
-    },
-    {
-      id: 3,
-      uid: 4,
-      rating: 2,
-      review: "This is a bad product",
-      date: "2021-09-01",
-    },
-    {
-      id: 4,
-      uid: 5,
-      rating: 1,
-      review: "This is a worst product",
-      date: "2021-09-01",
-    },
-  ];
-
   const pathname = usePathname();
 
   const itemId = pathname?.split("/")[2]; // Assuming the path is /items/[item]
@@ -76,6 +51,10 @@ function ItemPage() {
   const [itemDetails, setItemDetails] = React.useState<ItemDetails | null>(
     null
   );
+
+  const [reviewUserDetails, setReviewUserDetails] = useState<
+    ReviewUserDetails[]
+  >([]);
 
   useEffect(() => {
     try {
@@ -94,7 +73,25 @@ function ItemPage() {
             images: itemData.imagesRefs,
             brandId: itemData.brandId,
             category: itemData.category,
+            reviews: itemData.reviews,
           });
+          const reviews = itemData.reviews;
+          if (reviews) {
+            reviews.forEach(async (review: { uid: string }) => {
+              const userSnapshot = await getDoc(doc(db, "users", review.uid));
+              if (userSnapshot.exists()) {
+                const userData = userSnapshot.data();
+                setReviewUserDetails((prev) => [
+                  ...prev,
+                  {
+                    uid: review.uid,
+                    displayName: userData.name,
+                    photoURL: userData.photoUrl,
+                  },
+                ]);
+              }
+            });
+          }
         }
       };
       fetchItemDetails();
@@ -190,14 +187,22 @@ function ItemPage() {
             </h1>
             <Separator className="bg-black" />
             <div className="flex flex-col gap-1">
-              {reviews.map((review, index) => (
+              {itemDetails.reviews?.map((review, index) => (
                 <div
                   key={index}
                   className="flex flex-col space-y-2 border-2 border-black rounded p-2"
                 >
                   <h1 className="text-2xl font-semibold text-gray-800">
                     <div className="flex flex-row items-center gap-2">
-                      {review.uid}
+                      <Avatar className="border-black border-2">
+                        <AvatarImage
+                          src={reviewUserDetails.at(index)?.photoURL}
+                        />
+                        <AvatarFallback>
+                          {reviewUserDetails.at(index)?.displayName.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      {reviewUserDetails.at(index)?.displayName}
                       {[1, 2, 3, 4, 5].map((star, index) =>
                         star <= review.rating ? (
                           <FaStar key={index} color="gold" size={24} />

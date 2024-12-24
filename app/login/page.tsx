@@ -27,6 +27,7 @@ type user = {
   dob: string;
   contact: string;
   gender: string;
+  photoUrl: string;
 };
 
 export default function LoginPage() {
@@ -94,6 +95,7 @@ export default function LoginPage() {
           uid: user?.uid,
           dob: date,
           gender: gender,
+          photoUrl: user?.photoURL || "",
         };
         const result: boolean = await createNewUser(newUser);
         if (result === true) {

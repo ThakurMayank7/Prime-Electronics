@@ -9,6 +9,7 @@ type user = {
   dob: string;
   contact: string;
   gender: string;
+  photoUrl: string;
 };
 
 export async function createNewUser(newUser: user): Promise<boolean> {
