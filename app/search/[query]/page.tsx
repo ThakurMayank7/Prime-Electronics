@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
+import { CldImage } from "next-cloudinary";
 
 interface SearchResults {
   items?: string[];
@@ -54,6 +55,8 @@ function SearchPage() {
 
   const [searchResultsFound, setSearchResultsFound] = useState<boolean>(true);
 
+  const [isRedirecting, setIsRedirecting] = useState<boolean>(false);
+
   useEffect(() => {
     if (user === null && loading === false) {
       router.push("/login");
@@ -68,6 +71,7 @@ function SearchPage() {
     const categories = searchParams.get("categories")?.split(",") || undefined;
 
     if (type && value) {
+      setIsRedirecting(true);
       let url: string = "";
       if (type === "item") {
         url = `/items/${value}`;
@@ -125,7 +129,6 @@ function SearchPage() {
       if (categories) {
         const categorySnap = await getDoc(doc(db, "data", "Category"));
         if (categorySnap.exists()) {
-          console.log(categorySnap.data());
           for (const index in categorySnap.data()) {
             if (categories.includes(index)) {
               const temporary: CategoryData = {
@@ -143,7 +146,7 @@ function SearchPage() {
     }
   };
 
-  if (loading) {
+  if (loading || isRedirecting) {
     return (
       <div className="h-screen w-screen items-center flex justify-center">
         <Spinner />
@@ -159,6 +162,7 @@ function SearchPage() {
   }
   return (
     <div>
+      <h1>Related Items</h1>
       {itemsData?.map((item) => (
         <div key={item.id}>
           {item.name}
@@ -178,19 +182,53 @@ function SearchPage() {
         </div>
       ))}
       <br />
-      {/* {searchResults.brands?.map((brand, index) => (
-        <div key={index}>
-          {brand}
-          {index}
-        </div>
+      <h1>Related Brands</h1>
+      <div className="flex flex-row gap-2">
+
+      {brandsData?.map((brand) => (
+        <Card key={brand.id}>
+            <CardHeader>
+              <CardTitle>Card Title</CardTitle>
+              <CardDescription>Card Description</CardDescription>
+            </CardHeader>
+            <CardContent>
+            <CldImage
+                src={brand.displayImage || "samples/balloons"}
+                width="200" // Transform the image: auto-crop to square aspect_ratio
+                height="200"
+                alt="banner"
+                crop={{
+                  type: "auto",
+                  source: true,
+                }}
+              />
+              <p>Card Content</p>
+            </CardContent>
+            <CardFooter>
+              <p>Card Footer</p>
+            </CardFooter>
+          </Card>
       ))}
+      </div>
       <br />
-      {searchResults.categories?.map((category, index) => (
-        <div key={index}>
-          {category}
-          {index}
-        </div>
-      ))} */}
+      <h1>Related Categories</h1>
+      <div className="flex flex-row">
+
+      {categoriesData?.map((category) => (
+          <Card key={category.id}>
+            <CardHeader>
+              <CardTitle>Card Title</CardTitle>
+              <CardDescription>Card Description</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>Card Content</p>
+            </CardContent>
+            <CardFooter>
+              <p>Card Footer</p>
+            </CardFooter>
+          </Card>
+      ))}
+      </div>
     </div>
   );
 }
