@@ -233,9 +233,12 @@ function ItemPage() {
                       orientation="vertical"
                       className="h-6 mr-auto ml-2"
                     />
-                    <button className="mx-auto flex flex-row gap-2">
+                    <button
+                      className="mx-auto flex flex-row gap-2"
+                      onClick={() => router.push("/cart")}
+                    >
                       <ShoppingCart />
-                      Item in Cart (
+                      In Cart (
                       {cartItems.filter((item) => item === itemId).length})
                     </button>
                     <Separator
