@@ -56,6 +56,8 @@ function ItemPage() {
     ReviewUserDetails[]
   >([]);
 
+  const [displayedImage, setDisplayedImage] = useState<string | null>(null);
+
   useEffect(() => {
     try {
       const fetchItemDetails = async () => {
@@ -75,6 +77,7 @@ function ItemPage() {
             category: itemData.category,
             reviews: itemData.reviews,
           });
+          setDisplayedImage(itemData.displayImageRef);
           const reviews = itemData.reviews;
           if (reviews) {
             reviews.forEach(async (review: { uid: string }) => {
@@ -114,6 +117,10 @@ function ItemPage() {
     );
   }
 
+  const changeDisplayedImage = (newImage: string) => {
+    if (displayedImage !== newImage) setDisplayedImage(newImage);
+  };
+
   return (
     <div>
       <div className="max-w-7xl mx-auto py-12 px-6">
@@ -122,7 +129,7 @@ function ItemPage() {
           {/* Left Column: Item Image Gallery */}
           <div className="lg:w-1/2 flex flex-col items-center space-y-4">
             <CldImage
-              src={itemDetails.displayImage || "samples/balloons"}
+              src={displayedImage || "samples/balloons"}
               width="500"
               height="500"
               alt={itemDetails.displayName}
@@ -132,6 +139,7 @@ function ItemPage() {
               {itemDetails.images.map((image, index) => (
                 <CldImage
                   key={index}
+                  onClick={() => changeDisplayedImage(image)}
                   src={image || "samples/balloons"}
                   width="100"
                   height="100"
