@@ -9,9 +9,7 @@ import React, { useEffect, useState } from "react";
 
 import {
   Card,
-  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -25,7 +23,6 @@ interface ItemDetail {
   itemName: string;
   itemDescription: string;
   itemId: string;
-  number: number;
 }
 
 function Cart() {
@@ -37,7 +34,11 @@ function Cart() {
     { item: string; number: number }[]
   >([]);
 
+  const [cart, setCart] = useState<string[]>([]);
+
   const [itemsDetails, setItemsDetails] = useState<ItemDetail[]>([]);
+
+  const [initialDetailsFetch,setInitialDetailsFetch]=useState<boolean>(false);
 
   useEffect(() => {
     if (user === null && loading === false) {
@@ -52,20 +53,7 @@ function Cart() {
           const userSnapshot = await getDoc(doc(db, "users", user?.uid));
           if (userSnapshot.exists()) {
             const cart: string[] = userSnapshot.data().cartItems;
-            if (cart) {
-              const temp: { item: string; number: number }[] = [];
-              cart.forEach((cartItem: string) => {
-                if (!temp.find((item) => item.item === cartItem)) {
-                  temp.push({
-                    item: cartItem,
-                    number: cart.filter((item: string) => item === cartItem)
-                      .length,
-                  });
-                }
-              });
-              setCartItems(temp);
-              fetchCartItemsDetails(temp);
-            }
+            setCart(cart);
           }
         };
         fetchCartItems();
@@ -74,6 +62,27 @@ function Cart() {
       }
     }
   }, [user]);
+
+  useEffect(() => {
+    if (cart) {
+      const temp: { item: string; number: number }[] = [];
+      cart.forEach((cartItem: string) => {
+        if (!temp.find((item) => item.item === cartItem)) {
+          temp.push({
+            item: cartItem,
+            number: cart.filter((item: string) => item === cartItem).length,
+          });
+        }
+      });
+      setCartItems(temp);
+      if(!initialDetailsFetch)
+      {
+        console.log('fetching details')
+        fetchCartItemsDetails(temp);
+        setInitialDetailsFetch(true);
+      }
+    }
+  }, [cart]);
 
   const fetchCartItemsDetails = async (
     cartItemsTemp: { item: string; number: number }[]
@@ -90,7 +99,6 @@ function Cart() {
               itemDescription: itemData.itemDescription,
               displayImage: itemData.displayImageRef,
               itemId: cartItem.item,
-              number: cartItem.number,
             };
 
             return temp; // Return the item detail for Promise.all
@@ -111,89 +119,112 @@ function Cart() {
   }
 
   const addToCart = async () => {
-      // if (itemId && user?.uid) {
-      //   const result = await updateCart([...cartItems, itemId], user?.uid);
-      //   if (result) {
-      //     if (cartItems) {
-      //       setCartItems((prevItems) => [...prevItems, itemId]);
-      //     } else {
-      //       setCartItems([itemId]);
-      //     }
-      //   }
-      // }
-    };
-  
-    const removeFromCart = async () => {
-      // if (cartItems && user?.uid && itemId) {
-      //   let temp: string[] = removeOneOccurrence([...cartItems], itemId);
-  
-      //   const result = await updateCart(temp, user?.uid);
-  
-      //   if (result) {
-      //     setCartItems(temp);
-      //   }
-      // }
-    };
-  
-    const removeOneOccurrence = (array: string[], item: string): string[] => {
-      const index = array.indexOf(item);
-      if (index !== -1) {
-        array.splice(index, 1);
-      }
-      return array;
-    };
+    // if (itemId && user?.uid) {
+    //   const result = await updateCart([...cartItems, itemId], user?.uid);
+    //   if (result) {
+    //     if (cartItems) {
+    //       setCartItems((prevItems) => [...prevItems, itemId]);
+    //     } else {
+    //       setCartItems([itemId]);
+    //     }
+    //   }
+    // }
+  };
+
+  const removeFromCart = async (itemId: string) => {
+    if (user?.uid && itemId) {
+    }
+    // if (cartItems && user?.uid && itemId) {
+    //   let temp: string[] = removeOneOccurrence([...cartItems], itemId);
+
+    //   const result = await updateCart(temp, user?.uid);
+
+    //   if (result) {
+    //     setCartItems(temp);
+    //   }
+    // }
+  };
+
+  const removeOneOccurrence = (array: string[], item: string): string[] => {
+    const index = array.indexOf(item);
+    if (index !== -1) {
+      array.splice(index, 1);
+    }
+    return array;
+  };
 
   return (
     <div>
+
+
+      {cart}
+      <br />
+    {cartItems.at(0)?.item}
+    <br />
+    {cartItems.at(0)?.number}
+    <br />
+    {itemsDetails.length>0 && "not undefined"}
+
       <div>
-        {itemsDetails &&
-          itemsDetails.map((itemDetails) => (
-            <Card key={itemDetails.itemId}
-            className="flex flex-row p-4"
-            >
+        {cartItems &&
+          cartItems.map((cartItem) =>{
+
+            const itemDetails:ItemDetail|undefined=itemsDetails.find(item=>item.itemId===cartItem.item);
+
+            if(itemDetails===undefined)
+            {
+              return <p key={cartItem.item}>undefined{cartItem.item}{cartItem.number}{itemDetails+"fsa"}</p>;
+            }
+            
+            return(
+              <Card key={cartItem.item} className="flex flex-row p-4">
               <CardHeader>
-              <CldImage
-              src={itemDetails.displayImage || "samples/balloons"}
-              width="300"
-              height="300"
-              alt={itemDetails.itemName}
-              className="rounded-lg shadow-lg object-cover"
-            />
+                <CldImage
+                  src={itemDetails.displayImage || "samples/balloons"}
+                  width="300"
+                  height="300"
+                  alt={itemDetails.itemName}
+                  className="rounded-lg shadow-lg object-cover"
+                />
               </CardHeader>
               <div className="ml-10 my-10">
                 <CardTitle>{itemDetails.itemName}</CardTitle>
                 <CardDescription>{itemDetails.itemDescription}</CardDescription>
               </div>
-              
-                {/* Call to Action */}
-            <div className="flex flex-col ml-auto my-auto">
-              <div className="bg-pallette3 text-white px-6 py-3 rounded-lg shadow-lg flex">
-                
-                    <button className="" onClick={() => removeFromCart()}>
-                      <Minus />
-                    </button>
-                    <Separator
-                      orientation="vertical"
-                      className="h-6 mr-auto ml-2"
-                    />
-                    <div
-                      className="mx-10 flex flex-row gap-2"
-                      onClick={() => router.push("/cart")}
-                    >
-                      {itemDetails.number}
-                    </div>
-                    <Separator
-                      orientation="vertical"
-                      className="h-6 ml-auto mr-2"
-                    />
-                    <button className="" onClick={() => addToCart()}>
-                      <Plus />
-                    </button>
-                  
-            </div>
+
+
+              <div className="flex flex-col ml-auto my-auto">
+                <div className="bg-pallette3 text-white px-6 py-3 rounded-lg shadow-lg flex">
+                  <button
+                    className=""
+                    onClick={() => removeFromCart(itemDetails.itemId)}
+                  >
+                    <Minus />
+                  </button>
+                  <Separator
+                    orientation="vertical"
+                    className="h-6 mr-auto ml-2"
+                  />
+                  <div
+                    className="mx-10 flex flex-row gap-2"
+                    onClick={() => router.push("/cart")}
+                  >
+                    {cartItem.number}
+                  </div>
+                  <Separator
+                    orientation="vertical"
+                    className="h-6 ml-auto mr-2"
+                  />
+                  <button className="" onClick={() => addToCart()}>
+                    <Plus />
+                  </button>
+                </div>
               </div>
             </Card>
-          ))}
+          )
+        } 
+        )
+        }
       </div>
     </div>
   );
