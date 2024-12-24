@@ -7,6 +7,19 @@ import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { CldImage } from "next-cloudinary";
+import { Minus, Plus, ShoppingCart } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { updateCart } from "@/actions/action";
+
 interface ItemDetail {
   displayImage: string;
   itemName: string;
@@ -97,12 +110,89 @@ function Cart() {
     );
   }
 
+  const addToCart = async () => {
+      // if (itemId && user?.uid) {
+      //   const result = await updateCart([...cartItems, itemId], user?.uid);
+      //   if (result) {
+      //     if (cartItems) {
+      //       setCartItems((prevItems) => [...prevItems, itemId]);
+      //     } else {
+      //       setCartItems([itemId]);
+      //     }
+      //   }
+      // }
+    };
+  
+    const removeFromCart = async () => {
+      // if (cartItems && user?.uid && itemId) {
+      //   let temp: string[] = removeOneOccurrence([...cartItems], itemId);
+  
+      //   const result = await updateCart(temp, user?.uid);
+  
+      //   if (result) {
+      //     setCartItems(temp);
+      //   }
+      // }
+    };
+  
+    const removeOneOccurrence = (array: string[], item: string): string[] => {
+      const index = array.indexOf(item);
+      if (index !== -1) {
+        array.splice(index, 1);
+      }
+      return array;
+    };
+
   return (
     <div>
       <div>
         {itemsDetails &&
           itemsDetails.map((itemDetails) => (
-            <div key={itemDetails.itemId}>{itemDetails.itemName}</div>
+            <Card key={itemDetails.itemId}
+            className="flex flex-row p-4"
+            >
+              <CardHeader>
+              <CldImage
+              src={itemDetails.displayImage || "samples/balloons"}
+              width="300"
+              height="300"
+              alt={itemDetails.itemName}
+              className="rounded-lg shadow-lg object-cover"
+            />
+              </CardHeader>
+              <div className="ml-10 my-10">
+                <CardTitle>{itemDetails.itemName}</CardTitle>
+                <CardDescription>{itemDetails.itemDescription}</CardDescription>
+              </div>
+              
+                {/* Call to Action */}
+            <div className="flex flex-col ml-auto my-auto">
+              <div className="bg-pallette3 text-white px-6 py-3 rounded-lg shadow-lg flex">
+                
+                    <button className="" onClick={() => removeFromCart()}>
+                      <Minus />
+                    </button>
+                    <Separator
+                      orientation="vertical"
+                      className="h-6 mr-auto ml-2"
+                    />
+                    <div
+                      className="mx-10 flex flex-row gap-2"
+                      onClick={() => router.push("/cart")}
+                    >
+                      {itemDetails.number}
+                    </div>
+                    <Separator
+                      orientation="vertical"
+                      className="h-6 ml-auto mr-2"
+                    />
+                    <button className="" onClick={() => addToCart()}>
+                      <Plus />
+                    </button>
+                  
+            </div>
+              </div>
+            </Card>
           ))}
       </div>
     </div>
