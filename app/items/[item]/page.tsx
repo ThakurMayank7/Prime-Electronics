@@ -14,6 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
+import { updateCart } from "@/actions/action";
 
 interface ItemDetails {
   id: string;
@@ -58,50 +59,62 @@ function ItemPage() {
 
   const [displayedImage, setDisplayedImage] = useState<string | null>(null);
 
-  useEffect(() => {
-    try {
-      const fetchItemDetails = async () => {
-        const itemSnapshot = await getDoc(doc(db, "items", itemId));
+  const [cartItems, setCartItems] = useState<string[]>([]);
 
-        if (itemSnapshot.exists()) {
-          const itemData = itemSnapshot.data();
-          setItemDetails({
-            id: itemSnapshot.id,
-            displayName: itemData.itemName,
-            description: itemData.itemDescription,
-            displayImage: itemData.displayImageRef,
-            price: itemData.price,
-            features: itemData.features,
-            images: itemData.imagesRefs,
-            brandId: itemData.brandId,
-            category: itemData.category,
-            reviews: itemData.reviews,
-          });
-          setDisplayedImage(itemData.displayImageRef);
-          const reviews = itemData.reviews;
-          if (reviews) {
-            reviews.forEach(async (review: { uid: string }) => {
-              const userSnapshot = await getDoc(doc(db, "users", review.uid));
-              if (userSnapshot.exists()) {
-                const userData = userSnapshot.data();
-                setReviewUserDetails((prev) => [
-                  ...prev,
-                  {
-                    uid: review.uid,
-                    displayName: userData.name,
-                    photoURL: userData.photoUrl,
-                  },
-                ]);
-              }
+  useEffect(() => {
+    if (user !== null) {
+      try {
+        const fetchItemDetails = async () => {
+          const itemSnapshot = await getDoc(doc(db, "items", itemId));
+
+          if (itemSnapshot.exists()) {
+            const itemData = itemSnapshot.data();
+            setItemDetails({
+              id: itemSnapshot.id,
+              displayName: itemData.itemName,
+              description: itemData.itemDescription,
+              displayImage: itemData.displayImageRef,
+              price: itemData.price,
+              features: itemData.features,
+              images: itemData.imagesRefs,
+              brandId: itemData.brandId,
+              category: itemData.category,
+              reviews: itemData.reviews,
             });
+            setDisplayedImage(itemData.displayImageRef);
+            const reviews = itemData.reviews;
+            if (reviews) {
+              reviews.forEach(async (review: { uid: string }) => {
+                const userSnapshot = await getDoc(doc(db, "users", review.uid));
+                if (userSnapshot.exists()) {
+                  const userData = userSnapshot.data();
+                  setReviewUserDetails((prev) => [
+                    ...prev,
+                    {
+                      uid: review.uid,
+                      displayName: userData.name,
+                      photoURL: userData.photoUrl,
+                    },
+                  ]);
+                }
+              });
+            }
           }
-        }
-      };
-      fetchItemDetails();
-    } catch (e) {
-      console.log(e);
+        };
+        fetchItemDetails();
+
+        const fetchCartItems = async () => {
+          const userSnapshot = await getDoc(doc(db, "users", user?.uid));
+          if (userSnapshot.exists()) {
+            setCartItems(userSnapshot.data().cartItems);
+          }
+        };
+        fetchCartItems();
+      } catch (e) {
+        console.log(e);
+      }
     }
-  }, [itemId]);
+  }, [itemId, user]);
 
   useEffect(() => {
     if (user === null && loading === false) {
@@ -119,6 +132,39 @@ function ItemPage() {
 
   const changeDisplayedImage = (newImage: string) => {
     if (displayedImage !== newImage) setDisplayedImage(newImage);
+  };
+
+  const addToCart = async () => {
+    if (itemId && user?.uid) {
+      const result = await updateCart([...cartItems, itemId], user?.uid);
+      if (result) {
+        if (cartItems) {
+          setCartItems((prevItems) => [...prevItems, itemId]);
+        } else {
+          setCartItems([itemId]);
+        }
+      }
+    }
+  };
+
+  const removeFromCart = async () => {
+    if (cartItems && user?.uid && itemId) {
+      let temp: string[] = removeOneOccurrence([...cartItems], itemId);
+
+      const result = await updateCart(temp, user?.uid);
+
+      if (result) {
+        setCartItems(temp);
+      }
+    }
+  };
+
+  const removeOneOccurrence = (array: string[], item: string): string[] => {
+    const index = array.indexOf(item);
+    if (index !== -1) {
+      array.splice(index, 1);
+    }
+    return array;
   };
 
   return (
@@ -178,14 +224,33 @@ function ItemPage() {
             {/* Call to Action */}
             <div className="mt-8 flex space-y-4 flex-col">
               <div className="bg-pallette3 text-white px-6 py-3 rounded-lg shadow-lg flex">
-                <button className=""><Minus/></button>
-                <Separator orientation="vertical" className="h-6 mr-auto ml-2"/>
-                <button className="mx-auto flex flex-row gap-2">
-                <ShoppingCart />
-                Item in Cart (1)
-                </button>
-                <Separator orientation="vertical" className="h-6 ml-auto mr-2"/>
-                <button className=""><Plus/></button>
+                {cartItems && cartItems.length > 0 ? (
+                  <>
+                    <button className="" onClick={() => removeFromCart()}>
+                      <Minus />
+                    </button>
+                    <Separator
+                      orientation="vertical"
+                      className="h-6 mr-auto ml-2"
+                    />
+                    <button className="mx-auto flex flex-row gap-2">
+                      <ShoppingCart />
+                      Item in Cart (
+                      {cartItems.filter((item) => item === itemId).length})
+                    </button>
+                    <Separator
+                      orientation="vertical"
+                      className="h-6 ml-auto mr-2"
+                    />
+                    <button className="" onClick={() => addToCart()}>
+                      <Plus />
+                    </button>
+                  </>
+                ) : (
+                  <button className="w-full" onClick={() => addToCart()}>
+                    Add to Cart
+                  </button>
+                )}
               </div>
               <br />
               <button className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-green-700">

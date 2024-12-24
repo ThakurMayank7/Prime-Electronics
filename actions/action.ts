@@ -1,6 +1,7 @@
 "use server";
 
 import { adminDb } from "@/firebase/admin";
+import admin from "firebase-admin";
 
 type user = {
   uid: string;
@@ -46,5 +47,26 @@ export async function checkExistingUser(uid: string | null): Promise<boolean> {
   } catch (error) {
     console.error("Error fetching data:", error);
     return false; // Handle error and return false
+  }
+}
+
+export async function updateCart(
+  newCart: string[],
+  userId: string | null
+): Promise<boolean> {
+  if (!newCart || !userId) {
+    console.warn("itemId is empty or null");
+    return false;
+  }
+  try {
+    const userRef = adminDb.collection("users").doc(userId);
+
+    await userRef.update({
+      cartItems: newCart,
+    });
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
   }
 }
