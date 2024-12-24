@@ -141,6 +141,16 @@ function ItemPage() {
           </div>
         </div>
       </div>
+      <div>
+        <div className="flex flex-col lg:flex-row">
+          <div className="lg:w-1/2 flex flex-col items-center space-y-4">
+            asd
+          </div>
+          <div className="lg:w-1/2 lg:pl-10 mt-8 lg:mt-0">
+            sd
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

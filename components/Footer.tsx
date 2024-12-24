@@ -1,7 +1,15 @@
+"use client";
+
 import Link from "next/link";
 import React from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 function Footer() {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
   return (
     <footer className="bg-gray-800 text-white py-12 ">
       <div className="max-w-7xl mx-auto px-6">
