@@ -163,36 +163,49 @@ function SearchPage() {
   return (
     <div>
       <h1>Related Items</h1>
-      {itemsData?.map((item) => (
-        <div key={item.id}>
-          {item.name}
-          {item.id}
-          <Card>
-            <CardHeader>
-              <CardTitle>Card Title</CardTitle>
-              <CardDescription>Card Description</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>Card Content</p>
-            </CardContent>
-            <CardFooter>
-              <p>Card Footer</p>
-            </CardFooter>
-          </Card>
-        </div>
-      ))}
+      <div className="flex flex-col gap-2">
+        {itemsData?.map((item) => (
+          <div key={item.id}>
+            <Card className="flex flex-row p-4">
+              <CardHeader>
+                <CldImage
+                  className="mx-10"
+                  src={item.displayImage || "samples/balloons"}
+                  width="200" // Transform the image: auto-crop to square aspect_ratio
+                  height="200"
+                  alt="banner"
+                  crop={{
+                    type: "auto",
+                    source: true,
+                  }}
+                />
+              </CardHeader>
+              <CardContent className="ml-10">
+                <CardTitle>Card Title</CardTitle>
+                <CardDescription>Card Description</CardDescription>
+                <p>Card Content</p>
+              </CardContent>
+              <CardFooter className="ml-auto">
+                {/* TODO add to cart */}
+                {/* TODO add to wishlist */}
+                {/* TODO buy now */}
+                <p>Card Footer</p>
+              </CardFooter>
+            </Card>
+          </div>
+        ))}
+      </div>
       <br />
       <h1>Related Brands</h1>
       <div className="flex flex-row gap-2">
-
-      {brandsData?.map((brand) => (
-        <Card key={brand.id}>
+        {brandsData?.map((brand) => (
+          <Card key={brand.id}>
             <CardHeader>
               <CardTitle>Card Title</CardTitle>
               <CardDescription>Card Description</CardDescription>
             </CardHeader>
             <CardContent>
-            <CldImage
+              <CldImage
                 src={brand.displayImage || "samples/balloons"}
                 width="200" // Transform the image: auto-crop to square aspect_ratio
                 height="200"
@@ -208,26 +221,26 @@ function SearchPage() {
               <p>Card Footer</p>
             </CardFooter>
           </Card>
-      ))}
+        ))}
       </div>
       <br />
       <h1>Related Categories</h1>
-      <div className="flex flex-row">
-
-      {categoriesData?.map((category) => (
-          <Card key={category.id}>
-            <CardHeader>
-              <CardTitle>Card Title</CardTitle>
-              <CardDescription>Card Description</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>Card Content</p>
-            </CardContent>
-            <CardFooter>
-              <p>Card Footer</p>
-            </CardFooter>
+      <div className="flex flex-row gap-2">
+        {categoriesData?.map((category) => (
+          <Card
+            key={category.id}
+            className="flex flex-row items-center p-4 gap-4"
+          >
+            <div>
+              <CardTitle className="text-4xl">{category.displayName}</CardTitle>
+            </div>
+            <div className="flex justify-center items-center w-full h-full my-auto">
+              <button className="bg-pallette3 text-white p-2 rounded">
+                See more
+              </button>
+            </div>
           </Card>
-      ))}
+        ))}
       </div>
     </div>
   );
