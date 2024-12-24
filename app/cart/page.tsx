@@ -12,6 +12,7 @@ interface ItemDetail {
   itemName: string;
   itemDescription: string;
   itemId: string;
+  number: number;
 }
 
 function Cart() {
@@ -50,34 +51,43 @@ function Cart() {
                 }
               });
               setCartItems(temp);
+              fetchCartItemsDetails(temp);
             }
           }
         };
         fetchCartItems();
-
-        const fetchCartItemsDetails = async () => {
-          const itemsDetailsToPush: ItemDetail[] = [];
-          cartItems.forEach(async (cartItem) => {
-            const itemSnap = await getDoc(doc(db, "items", cartItem.item));
-            if (itemSnap.exists()) {
-              const itemData = itemSnap.data();
-              const temp: ItemDetail = {
-                itemName: itemData.itemName,
-                itemDescription: itemData.itemDescription,
-                displayImage: itemData.displayImageRef,
-                itemId: cartItem.item,
-              };
-              itemsDetailsToPush.push(temp);
-            }
-          });
-          setItemsDetails(itemsDetailsToPush);
-        };
-        fetchCartItemsDetails();
       } catch (err) {
         console.error(err);
       }
     }
   }, [user]);
+
+  const fetchCartItemsDetails = async (
+    cartItemsTemp: { item: string; number: number }[]
+  ) => {
+    const itemsDetailsToPush: ItemDetail[] = (
+      await Promise.all(
+        cartItemsTemp.map(async (cartItem) => {
+          const itemSnap = await getDoc(doc(db, "items", cartItem.item));
+          if (itemSnap.exists()) {
+            const itemData = itemSnap.data();
+
+            const temp: ItemDetail = {
+              itemName: itemData.itemName,
+              itemDescription: itemData.itemDescription,
+              displayImage: itemData.displayImageRef,
+              itemId: cartItem.item,
+              number: cartItem.number,
+            };
+
+            return temp; // Return the item detail for Promise.all
+          }
+          return undefined; // Return undefined if no data
+        })
+      )
+    ).filter((item): item is ItemDetail => item !== undefined);
+    setItemsDetails(itemsDetailsToPush);
+  };
 
   if (loading) {
     return (
@@ -89,7 +99,12 @@ function Cart() {
 
   return (
     <div>
-      <div>{cartItems.toString()}</div>
+      <div>
+        {itemsDetails &&
+          itemsDetails.map((itemDetails) => (
+            <div key={itemDetails.itemId}>{itemDetails.itemName}</div>
+          ))}
+      </div>
     </div>
   );
 }
