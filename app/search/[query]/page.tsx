@@ -28,6 +28,16 @@ interface ItemData {
   description: string;
   displayImage: string;
 }
+interface BrandData {
+  id: string;
+  name: string;
+  description: string;
+  displayImage: string;
+}
+interface CategoryData {
+  id: string;
+  displayName: string;
+}
 
 function SearchPage() {
   const { user, loading } = useAuth();
@@ -38,9 +48,11 @@ function SearchPage() {
 
   const [itemsData, setItemsData] = useState<ItemData[]>([]);
 
-  // const [brandsData, setBrandsData] = useState<any[]>([]);
+  const [brandsData, setBrandsData] = useState<BrandData[]>([]);
 
-  // const [categoriesData, setCategoriesData] = useState<any[]>([]);
+  const [categoriesData, setCategoriesData] = useState<CategoryData[]>([]);
+
+  const [searchResultsFound, setSearchResultsFound] = useState<boolean>(true);
 
   useEffect(() => {
     if (user === null && loading === false) {
@@ -66,8 +78,15 @@ function SearchPage() {
       }
       router.push(url);
     }
-
-    fetchData({ items, brands, categories });
+    if (
+      ((items?.length || 0) >= 1 && items?.at(0) !== "") ||
+      ((brands?.length || 0) >= 1 && brands?.at(0) !== "") ||
+      ((categories?.length || 0) >= 1 && categories?.at(0) !== "")
+    )
+      fetchData({ items, brands, categories });
+    else {
+      setSearchResultsFound(false);
+    }
   }, [router, searchParams]);
 
   const fetchData = async ({ items, brands, categories }: SearchResults) => {
@@ -87,6 +106,38 @@ function SearchPage() {
         }
       }
       setItemsData(itemsDataToAdd);
+      const brandsDataToAdd: BrandData[] = [];
+      if (brands) {
+        for (const brandId of brands) {
+          const brandSnap = await getDoc(doc(db, "brands", brandId));
+          if (brandSnap.exists()) {
+            brandsDataToAdd.push({
+              id: brandSnap.id,
+              name: brandSnap.data().brandName,
+              description: brandSnap.data().brandDescription,
+              displayImage: brandSnap.data().logoRef,
+            });
+          }
+        }
+      }
+      setBrandsData(brandsDataToAdd);
+      const categoriesDataToAdd: CategoryData[] = [];
+      if (categories) {
+        const categorySnap = await getDoc(doc(db, "data", "Category"));
+        if (categorySnap.exists()) {
+          console.log(categorySnap.data());
+          for (const index in categorySnap.data()) {
+            if (categories.includes(index)) {
+              const temporary: CategoryData = {
+                displayName: categorySnap.data()[index],
+                id: index,
+              };
+              categoriesDataToAdd.push(temporary);
+            }
+          }
+        }
+      }
+      setCategoriesData(categoriesDataToAdd);
     } catch (e) {
       console.log(e);
     }
@@ -96,6 +147,13 @@ function SearchPage() {
     return (
       <div className="h-screen w-screen items-center flex justify-center">
         <Spinner />
+      </div>
+    );
+  }
+  if (!searchResultsFound) {
+    return (
+      <div>
+        <h1>No search results found</h1>
       </div>
     );
   }
