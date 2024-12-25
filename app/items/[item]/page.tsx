@@ -224,7 +224,9 @@ function ItemPage() {
             {/* Call to Action */}
             <div className="mt-8 flex space-y-4 flex-col">
               <div className="bg-pallette3 text-white px-6 py-3 rounded-lg shadow-lg flex">
-                {cartItems && cartItems.length > 0 ? (
+                {cartItems &&
+                cartItems.length > 0 &&
+                cartItems.includes(itemId) ? (
                   <>
                     <button className="" onClick={() => removeFromCart()}>
                       <Minus />

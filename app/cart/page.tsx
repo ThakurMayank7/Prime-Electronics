@@ -16,7 +16,7 @@ import {
 import { CldImage } from "next-cloudinary";
 import { Minus, Plus } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { updateCart } from "@/actions/action";
+import { updateCart, updateWishlist } from "@/actions/action";
 
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
@@ -136,7 +136,7 @@ function Cart() {
     if (itemId && user?.uid) {
       const result = await updateCart([...cart, itemId], user?.uid);
       if (result) {
-        if (cartItems) {
+        if (cart) {
           setCart((prevItems) => [...prevItems, itemId]);
         } else {
           setCart([itemId]);
@@ -163,6 +163,39 @@ function Cart() {
       array.splice(index, 1);
     }
     return array;
+  };
+
+  const addToWishlist = async (itemId: string) => {
+    if (itemId && user?.uid) {
+      let newWishlist: string[] = [];
+      if (wishlist !== undefined) {
+        newWishlist = [...wishlist, itemId];
+      } else {
+        newWishlist = [itemId];
+      }
+      const result = await updateWishlist(newWishlist, user?.uid);
+
+      if (result) {
+        if (wishlist) {
+          setWishlist((prevItems) => [...prevItems, itemId]);
+        } else {
+          setWishlist([itemId]);
+        }
+      }
+    }
+  };
+
+  const removeFromWishlist = async (itemId: string) => {
+    if (wishlist && user?.uid && itemId) {
+      if (wishlist.includes(itemId)) {
+        const temp: string[] = removeOneOccurrence([...wishlist], itemId);
+        const result = await updateWishlist(temp, user?.uid);
+
+        if (result) {
+          setWishlist(temp);
+        }
+      }
+    }
   };
 
   return (
@@ -204,7 +237,11 @@ function Cart() {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger>
-                            <AiFillHeart color="red" size={24} />
+                            <AiFillHeart
+                              color="red"
+                              size={24}
+                              onClick={() => removeFromWishlist(cartItem.item)}
+                            />
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>Remove from Wishlist</p>
@@ -215,7 +252,11 @@ function Cart() {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger>
-                            <AiOutlineHeart color="red" size={24} />
+                            <AiOutlineHeart
+                              color="red"
+                              size={24}
+                              onClick={() => addToWishlist(cartItem.item)}
+                            />
                           </TooltipTrigger>
                           <TooltipContent className="bg-red-400">
                             <p>Add to Wishlist</p>

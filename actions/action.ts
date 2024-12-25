@@ -1,7 +1,6 @@
 "use server";
 
 import { adminDb } from "@/firebase/admin";
-import admin from "firebase-admin";
 
 type user = {
   uid: string;
@@ -55,18 +54,37 @@ export async function updateCart(
   userId: string | null
 ): Promise<boolean> {
   if (!newCart || !userId) {
-    console.warn("itemId is empty or null");
+    console.warn("cart or userId is empty or null");
     return false;
   }
   try {
     const userRef = adminDb.collection("users").doc(userId);
-
     await userRef.update({
       cartItems: newCart,
     });
     return true;
   } catch (error) {
     console.error(error);
+    return false;
+  }
+}
+
+export async function updateWishlist(
+  newWishlist: string[],
+  userId: string | null
+): Promise<boolean> {
+  if (!newWishlist || !userId) {
+    console.warn("wishlist or userId is empty or null");
+    return false;
+  }
+  try {
+    const userRef = adminDb.collection("users").doc(userId);
+    await userRef.update({
+      wishlist: newWishlist,
+    });
+    return true;
+  } catch (err) {
+    console.error(err);
     return false;
   }
 }
