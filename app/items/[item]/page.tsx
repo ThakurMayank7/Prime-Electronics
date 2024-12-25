@@ -14,7 +14,16 @@ import { Separator } from "@/components/ui/separator";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
-import { updateCart } from "@/actions/action";
+import { updateCart, updateWishlist } from "@/actions/action";
+
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ItemDetails {
   id: string;
@@ -60,6 +69,8 @@ function ItemPage() {
   const [displayedImage, setDisplayedImage] = useState<string | null>(null);
 
   const [cartItems, setCartItems] = useState<string[]>([]);
+
+  const [wishlist, setWishlist] = useState<string[]>([]);
 
   useEffect(() => {
     if (user !== null) {
@@ -107,6 +118,7 @@ function ItemPage() {
           const userSnapshot = await getDoc(doc(db, "users", user?.uid));
           if (userSnapshot.exists()) {
             setCartItems(userSnapshot.data().cartItems);
+            setWishlist(userSnapshot.data().wishlist);
           }
         };
         fetchCartItems();
@@ -167,6 +179,39 @@ function ItemPage() {
     return array;
   };
 
+  const addToWishlist = async () => {
+    if (itemId && user?.uid) {
+      let newWishlist: string[] = [];
+      if (wishlist !== undefined) {
+        newWishlist = [...wishlist, itemId];
+      } else {
+        newWishlist = [itemId];
+      }
+      const result = await updateWishlist(newWishlist, user?.uid);
+
+      if (result) {
+        if (wishlist) {
+          setWishlist((prevItems) => [...prevItems, itemId]);
+        } else {
+          setWishlist([itemId]);
+        }
+      }
+    }
+  };
+
+  const removeFromWishlist = async () => {
+    if (wishlist && user?.uid && itemId) {
+      if (wishlist.includes(itemId)) {
+        const temp: string[] = removeOneOccurrence([...wishlist], itemId);
+        const result = await updateWishlist(temp, user?.uid);
+
+        if (result) {
+          setWishlist(temp);
+        }
+      }
+    }
+  };
+
   return (
     <div>
       <div className="max-w-7xl mx-auto py-12 px-6">
@@ -198,8 +243,39 @@ function ItemPage() {
 
           {/* Right Column: Item Info */}
           <div className="lg:w-1/2 lg:pl-10 mt-8 lg:mt-0">
-            <h1 className="text-3xl font-semibold text-gray-800">
+            <h1 className="text-3xl font-semibold text-gray-800 flex flex-row gap-4 items-center">
               {itemDetails.displayName}
+              {wishlist !== undefined && wishlist.includes(itemId) ? (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <AiFillHeart
+                        color="red"
+                        size={24}
+                        onClick={() => removeFromWishlist()}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Remove from Wishlist</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <AiOutlineHeart
+                        color="red"
+                        size={24}
+                        onClick={() => addToWishlist()}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-red-400">
+                      <p>Add to Wishlist</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
             </h1>
             <p className="text-xl text-gray-600 mt-2">
               ₹{Intl.NumberFormat("en-IN").format(itemDetails.price)}
