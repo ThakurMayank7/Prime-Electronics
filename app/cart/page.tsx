@@ -14,7 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CldImage } from "next-cloudinary";
-import { Minus, Plus, ShoppingCart } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { updateCart } from "@/actions/action";
 
@@ -38,7 +38,8 @@ function Cart() {
 
   const [itemsDetails, setItemsDetails] = useState<ItemDetail[]>([]);
 
-  const [initialDetailsFetch,setInitialDetailsFetch]=useState<boolean>(false);
+  const [initialDetailsFetch, setInitialDetailsFetch] =
+    useState<boolean>(false);
 
   useEffect(() => {
     if (user === null && loading === false) {
@@ -75,14 +76,14 @@ function Cart() {
         }
       });
       setCartItems(temp);
-      if(!initialDetailsFetch)
-      {
-        console.log('fetching details')
+      // console.log(temp,'this is temp')
+      if (!initialDetailsFetch && temp.length > 0) {
+        // console.log('fetching details')
         fetchCartItemsDetails(temp);
         setInitialDetailsFetch(true);
       }
     }
-  }, [cart]);
+  }, [cart, initialDetailsFetch]);
 
   const fetchCartItemsDetails = async (
     cartItemsTemp: { item: string; number: number }[]
@@ -118,31 +119,29 @@ function Cart() {
     );
   }
 
-  const addToCart = async () => {
-    // if (itemId && user?.uid) {
-    //   const result = await updateCart([...cartItems, itemId], user?.uid);
-    //   if (result) {
-    //     if (cartItems) {
-    //       setCartItems((prevItems) => [...prevItems, itemId]);
-    //     } else {
-    //       setCartItems([itemId]);
-    //     }
-    //   }
-    // }
+  const addToCart = async (itemId: string) => {
+    if (itemId && user?.uid) {
+      const result = await updateCart([...cart, itemId], user?.uid);
+      if (result) {
+        if (cartItems) {
+          setCart((prevItems) => [...prevItems, itemId]);
+        } else {
+          setCart([itemId]);
+        }
+      }
+    }
   };
 
   const removeFromCart = async (itemId: string) => {
-    if (user?.uid && itemId) {
+    if (cartItems && user?.uid && itemId) {
+      const temp: string[] = removeOneOccurrence([...cart], itemId);
+
+      const result = await updateCart(temp, user?.uid);
+
+      if (result) {
+        setCart(temp);
+      }
     }
-    // if (cartItems && user?.uid && itemId) {
-    //   let temp: string[] = removeOneOccurrence([...cartItems], itemId);
-
-    //   const result = await updateCart(temp, user?.uid);
-
-    //   if (result) {
-    //     setCartItems(temp);
-    //   }
-    // }
   };
 
   const removeOneOccurrence = (array: string[], item: string): string[] => {
@@ -155,76 +154,82 @@ function Cart() {
 
   return (
     <div>
-
-
       {cart}
       <br />
-    {cartItems.at(0)?.item}
-    <br />
-    {cartItems.at(0)?.number}
-    <br />
-    {itemsDetails.length>0 && "not undefined"}
+      {cartItems.at(0)?.item}
+      <br />
+      {cartItems.at(0)?.number}
+      <br />
+      {itemsDetails.length > 0 && "not undefined"}
 
       <div>
         {cartItems &&
-          cartItems.map((cartItem) =>{
+          cartItems.map((cartItem) => {
+            const itemDetails: ItemDetail | undefined = itemsDetails.find(
+              (item) => item.itemId === cartItem.item
+            );
 
-            const itemDetails:ItemDetail|undefined=itemsDetails.find(item=>item.itemId===cartItem.item);
-
-            if(itemDetails===undefined)
-            {
-              return <p key={cartItem.item}>undefined{cartItem.item}{cartItem.number}{itemDetails+"fsa"}</p>;
+            if (itemDetails === undefined) {
+              return (
+                <p key={cartItem.item}>
+                  undefined{cartItem.item}
+                  {cartItem.number}
+                  {itemDetails + "fsa"}
+                </p>
+              );
             }
-            
-            return(
+
+            return (
               <Card key={cartItem.item} className="flex flex-row p-4">
-              <CardHeader>
-                <CldImage
-                  src={itemDetails.displayImage || "samples/balloons"}
-                  width="300"
-                  height="300"
-                  alt={itemDetails.itemName}
-                  className="rounded-lg shadow-lg object-cover"
-                />
-              </CardHeader>
-              <div className="ml-10 my-10">
-                <CardTitle>{itemDetails.itemName}</CardTitle>
-                <CardDescription>{itemDetails.itemDescription}</CardDescription>
-              </div>
-
-
-              <div className="flex flex-col ml-auto my-auto">
-                <div className="bg-pallette3 text-white px-6 py-3 rounded-lg shadow-lg flex">
-                  <button
-                    className=""
-                    onClick={() => removeFromCart(itemDetails.itemId)}
-                  >
-                    <Minus />
-                  </button>
-                  <Separator
-                    orientation="vertical"
-                    className="h-6 mr-auto ml-2"
+                <CardHeader>
+                  <CldImage
+                    src={itemDetails.displayImage || "samples/balloons"}
+                    width="300"
+                    height="300"
+                    alt={itemDetails.itemName}
+                    className="rounded-lg shadow-lg object-cover"
                   />
-                  <div
-                    className="mx-10 flex flex-row gap-2"
-                    onClick={() => router.push("/cart")}
-                  >
-                    {cartItem.number}
-                  </div>
-                  <Separator
-                    orientation="vertical"
-                    className="h-6 ml-auto mr-2"
-                  />
-                  <button className="" onClick={() => addToCart()}>
-                    <Plus />
-                  </button>
+                </CardHeader>
+                <div className="ml-10 my-10">
+                  <CardTitle>{itemDetails.itemName}</CardTitle>
+                  <CardDescription>
+                    {itemDetails.itemDescription}
+                  </CardDescription>
                 </div>
-              </div>
-            </Card>
-          )
-        } 
-        )
-        }
+
+                <div className="flex flex-col ml-auto my-auto">
+                  <div className="bg-pallette3 text-white px-6 py-3 rounded-lg shadow-lg flex">
+                    <button
+                      className=""
+                      onClick={() => removeFromCart(cartItem.item)}
+                    >
+                      <Minus />
+                    </button>
+                    <Separator
+                      orientation="vertical"
+                      className="h-6 mr-auto ml-2"
+                    />
+                    <div
+                      className="mx-10 flex flex-row gap-2"
+                      onClick={() => router.push("/cart")}
+                    >
+                      {cartItem.number}
+                    </div>
+                    <Separator
+                      orientation="vertical"
+                      className="h-6 ml-auto mr-2"
+                    />
+                    <button
+                      className=""
+                      onClick={() => addToCart(cartItem.item)}
+                    >
+                      <Plus />
+                    </button>
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
       </div>
     </div>
   );

@@ -149,7 +149,7 @@ function ItemPage() {
 
   const removeFromCart = async () => {
     if (cartItems && user?.uid && itemId) {
-      let temp: string[] = removeOneOccurrence([...cartItems], itemId);
+      const temp: string[] = removeOneOccurrence([...cartItems], itemId);
 
       const result = await updateCart(temp, user?.uid);
 
