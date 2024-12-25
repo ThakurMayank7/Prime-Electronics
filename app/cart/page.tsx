@@ -243,7 +243,7 @@ function Cart() {
                               onClick={() => removeFromWishlist(cartItem.item)}
                             />
                           </TooltipTrigger>
-                          <TooltipContent>
+                          <TooltipContent className="bg-red-400">
                             <p>Remove from Wishlist</p>
                           </TooltipContent>
                         </Tooltip>
