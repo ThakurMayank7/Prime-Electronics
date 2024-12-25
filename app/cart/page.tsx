@@ -18,6 +18,15 @@ import { Minus, Plus } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { updateCart } from "@/actions/action";
 
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 interface ItemDetail {
   displayImage: string;
   itemName: string;
@@ -41,6 +50,8 @@ function Cart() {
   const [initialDetailsFetch, setInitialDetailsFetch] =
     useState<boolean>(false);
 
+  const [wishlist, setWishlist] = useState<string[]>([]);
+
   useEffect(() => {
     if (user === null && loading === false) {
       router.push("/login");
@@ -55,6 +66,8 @@ function Cart() {
           if (userSnapshot.exists()) {
             const cart: string[] = userSnapshot.data().cartItems;
             setCart(cart);
+            const wishlist: string[] = userSnapshot.data().wishlist;
+            setWishlist(wishlist);
           }
         };
         fetchCartItems();
@@ -154,15 +167,7 @@ function Cart() {
 
   return (
     <div>
-      {cart}
-      <br />
-      {cartItems.at(0)?.item}
-      <br />
-      {cartItems.at(0)?.number}
-      <br />
-      {itemsDetails.length > 0 && "not undefined"}
-
-      <div>
+      <div className="flex flex-col gap-2">
         {cartItems &&
           cartItems.map((cartItem) => {
             const itemDetails: ItemDetail | undefined = itemsDetails.find(
@@ -191,8 +196,36 @@ function Cart() {
                   />
                 </CardHeader>
                 <div className="ml-10 my-10">
-                  <CardTitle>{itemDetails.itemName}</CardTitle>
-                  <CardDescription>
+                  <CardTitle className="flex flex-row gap-4 items-center">
+                    {itemDetails.itemName}
+
+                    {wishlist !== undefined &&
+                    wishlist.includes(cartItem.item) ? (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <AiFillHeart color="red" size={24} />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Remove from Wishlist</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ) : (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <AiOutlineHeart color="red" size={24} />
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-red-400">
+                            <p>Add to Wishlist</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                  </CardTitle>
+                  <br />
+                  <CardDescription className="max-w-screen-md">
                     {itemDetails.itemDescription}
                   </CardDescription>
                 </div>

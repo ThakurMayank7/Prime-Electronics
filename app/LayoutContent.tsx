@@ -14,7 +14,7 @@ export default function LayoutContent({ children }: PropsWithChildren) {
   return (
     <>
       {!isLoginPage && <Header />}
-      <main className="flex flex-1">
+      <main className="flex flex-1 min-h-screen">
         {!isLoginPage && <AppSidebar />}
 
         <div className="m-1  bg-gray-100 flex-1 overflow-hidden">
