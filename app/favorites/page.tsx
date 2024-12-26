@@ -6,7 +6,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-function Wishlist() {
+function Favorites() {
   const { user, loading } = useAuth();
 
   const router = useRouter();
@@ -52,4 +52,4 @@ function Wishlist() {
   );
 }
 
-export default Wishlist;
+export default Favorites;

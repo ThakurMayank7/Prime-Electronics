@@ -74,10 +74,10 @@ function AppSidebar() {
           </Link>
         </div>
         <div>
-          <Link href="/wishlist">
+          <Link href="/favorites">
             <div className="text-xl text- bg-pallette5 rounded p-2  font-semibold flex gap-2 items-center hover:bg-pallette6 hover:border-2 hover:cursor-pointer hover:text-white">
               <Heart />
-              <span className={`${expand ? "" : "hidden"}`}>Wishlist</span>
+              <span className={`${expand ? "" : "hidden"}`}>Favorites</span>
             </div>
           </Link>
         </div>
