@@ -3,6 +3,7 @@
 import { db } from "@/firebase/firebaseConfig";
 import { useAuth } from "@/hooks/useAuth";
 import { doc, getDoc } from "firebase/firestore";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 interface Category {
@@ -12,6 +13,8 @@ interface Category {
 
 function SearchByCategory() {
   const { user } = useAuth();
+
+  const router = useRouter();
 
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -42,12 +45,13 @@ function SearchByCategory() {
       <h1 className="text-4xl font-serif my-2">Search By Category</h1>
       <div className="flex flex-row gap-6">
         {categories.map((category) => (
-          <div
+          <button
+            onClick={() => router.push(`/categories/${category.id}`)}
             key={category.id}
-            className="rounded bg-slate-700 hover:bg-slate-800 hover:cursor-pointer text-lg text-white p-2"
+            className="rounded bg-slate-700 hover:bg-slate-800 text-lg text-white p-2"
           >
             {category.display}
-          </div>
+          </button>
         ))}
       </div>
     </div>
