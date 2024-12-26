@@ -46,7 +46,11 @@ function SearchByCategory() {
       <div className="flex flex-row gap-6">
         {categories.map((category) => (
           <button
-            onClick={() => router.push(`/categories/${category.id}`)}
+            onClick={() =>
+              router.push(
+                `/categories/${category.id}?category=${category.display}`
+              )
+            }
             key={category.id}
             className="rounded bg-slate-700 hover:bg-slate-800 text-lg text-white p-2"
           >
