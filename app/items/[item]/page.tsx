@@ -70,7 +70,7 @@ function ItemPage() {
 
   const [cartItems, setCartItems] = useState<string[]>([]);
 
-  const [wishlist, setWishlist] = useState<string[]>([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   useEffect(() => {
     if (user !== null) {
@@ -118,7 +118,7 @@ function ItemPage() {
           const userSnapshot = await getDoc(doc(db, "users", user?.uid));
           if (userSnapshot.exists()) {
             setCartItems(userSnapshot.data().cartItems);
-            setWishlist(userSnapshot.data().wishlist);
+            setFavorites(userSnapshot.data().favorites);
           }
         };
         fetchCartItems();
@@ -182,31 +182,31 @@ function ItemPage() {
   const addToWishlist = async () => {
     if (itemId && user?.uid) {
       let newWishlist: string[] = [];
-      if (wishlist !== undefined) {
-        newWishlist = [...wishlist, itemId];
+      if (favorites !== undefined) {
+        newWishlist = [...favorites, itemId];
       } else {
         newWishlist = [itemId];
       }
       const result = await updateWishlist(newWishlist, user?.uid);
 
       if (result) {
-        if (wishlist) {
-          setWishlist((prevItems) => [...prevItems, itemId]);
+        if (favorites) {
+          setFavorites((prevItems) => [...prevItems, itemId]);
         } else {
-          setWishlist([itemId]);
+          setFavorites([itemId]);
         }
       }
     }
   };
 
   const removeFromWishlist = async () => {
-    if (wishlist && user?.uid && itemId) {
-      if (wishlist.includes(itemId)) {
-        const temp: string[] = removeOneOccurrence([...wishlist], itemId);
+    if (favorites && user?.uid && itemId) {
+      if (favorites.includes(itemId)) {
+        const temp: string[] = removeOneOccurrence([...favorites], itemId);
         const result = await updateWishlist(temp, user?.uid);
 
         if (result) {
-          setWishlist(temp);
+          setFavorites(temp);
         }
       }
     }
@@ -245,7 +245,7 @@ function ItemPage() {
           <div className="lg:w-1/2 lg:pl-10 mt-8 lg:mt-0">
             <h1 className="text-3xl font-semibold text-gray-800 flex flex-row gap-4 items-center">
               {itemDetails.displayName}
-              {wishlist !== undefined && wishlist.includes(itemId) ? (
+              {favorites !== undefined && favorites.includes(itemId) ? (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
@@ -256,7 +256,7 @@ function ItemPage() {
                       />
                     </TooltipTrigger>
                     <TooltipContent className="bg-red-400">
-                      <p>Remove from Wishlist</p>
+                      <p>Remove from Favorites</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -271,7 +271,7 @@ function ItemPage() {
                       />
                     </TooltipTrigger>
                     <TooltipContent className="bg-red-400">
-                      <p>Add to Wishlist</p>
+                      <p>Add to Favorites</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>

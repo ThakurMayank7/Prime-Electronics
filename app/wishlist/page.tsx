@@ -11,7 +11,7 @@ function Wishlist() {
 
   const router = useRouter();
 
-  const [wishlist, setWishlist] = useState<string[]>([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   const [cart, setCart] = useState<string[]>([]);
 
@@ -24,14 +24,14 @@ function Wishlist() {
   useEffect(() => {
     if (user !== null)
       try {
-        const fetchWishlist = async () => {
+        const fetchFavorites = async () => {
           const userSnapshot = await getDoc(doc(db, "users", user.uid));
           if (userSnapshot.exists()) {
-            setWishlist(userSnapshot.data().wishlist);
+            setFavorites(userSnapshot.data().favorites);
             setCart(userSnapshot.data().cartItems);
           }
         };
-        fetchWishlist();
+        fetchFavorites();
       } catch (err) {
         console.error(err);
       }
@@ -45,7 +45,7 @@ function Wishlist() {
     <div>
       wishlist
       <div>
-        {wishlist}
+        {favorites}
         {cart}
       </div>
     </div>
