@@ -210,9 +210,10 @@ function Cart() {
             if (itemDetails === undefined) {
               return (
                 <p key={cartItem.item}>
-                  undefined{cartItem.item}
+                  There was some error. Please Reload this Page.
+                  {/* undefined{cartItem.item}
                   {cartItem.number}
-                  {itemDetails + "fsa"}
+                  {itemDetails + "fsa"} */}
                 </p>
               );
             }

@@ -80,7 +80,7 @@ export async function updateWishlist(
   try {
     const userRef = adminDb.collection("users").doc(userId);
     await userRef.update({
-      wishlist: newWishlist,
+      favorites: newWishlist,
     });
     return true;
   } catch (err) {

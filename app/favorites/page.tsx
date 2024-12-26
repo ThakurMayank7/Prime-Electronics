@@ -6,6 +6,13 @@ import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+interface ItemDetail {
+  displayImage: string;
+  itemName: string;
+  itemDescription: string;
+  itemId: string;
+}
+
 function Favorites() {
   const { user, loading } = useAuth();
 
@@ -14,6 +21,8 @@ function Favorites() {
   const [favorites, setFavorites] = useState<string[]>([]);
 
   const [cart, setCart] = useState<string[]>([]);
+
+  const [favoritesDetails, setFavoritesDetails] = useState<ItemDetail[]>([]);
 
   useEffect(() => {
     if (user === null && loading === false) {
@@ -27,8 +36,31 @@ function Favorites() {
         const fetchFavorites = async () => {
           const userSnapshot = await getDoc(doc(db, "users", user.uid));
           if (userSnapshot.exists()) {
-            setFavorites(userSnapshot.data().favorites);
+            const favoritesData: string[] = userSnapshot.data().favorites;
+            setFavorites(favoritesData);
             setCart(userSnapshot.data().cartItems);
+
+            const fetchFavoritesDetails = async () => {
+              if (favoritesData) {
+                favoritesData.forEach(async (favorite) => {
+                  const favoriteDetailsSnapshot = await getDoc(
+                    doc(db, "items", favorite)
+                  );
+                  if (favoriteDetailsSnapshot.exists()) {
+                    const data = favoriteDetailsSnapshot.data();
+                    const itemDetailsToPush: ItemDetail = {
+                      itemId: favorite,
+                      itemName: data.itemName,
+                      itemDescription: data.itemDescription,
+                      displayImage: data.displayImageRef,
+                    };
+                    setFavoritesDetails((prev) => [...prev, itemDetailsToPush]);
+                  }
+                });
+              }
+            };
+
+            fetchFavoritesDetails();
           }
         };
         fetchFavorites();
@@ -44,9 +76,21 @@ function Favorites() {
   return (
     <div>
       wishlist
-      <div>
-        {favorites}
-        {cart}
+      <div className="flex flex-col gap-2">
+        {favorites &&
+          favorites.map((favorite) => {
+            const itemDetails: ItemDetail | undefined = favoritesDetails.find(
+              (item) => item.itemId === favorite
+            );
+            if (!itemDetails) {
+              return (
+                <p key={favorite}>
+                  There was some error. Please Reload this Page.
+                </p>
+              );
+            }
+            return <div key={favorite}>{itemDetails?.itemId}</div>;
+          })}
       </div>
     </div>
   );
