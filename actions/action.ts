@@ -69,7 +69,7 @@ export async function updateCart(
   }
 }
 
-export async function updateWishlist(
+export async function updateFavorites(
   newWishlist: string[],
   userId: string | null
 ): Promise<boolean> {

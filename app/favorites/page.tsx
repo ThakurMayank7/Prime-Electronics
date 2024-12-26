@@ -13,14 +13,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { AiFillHeart } from "react-icons/ai";
 import { CldImage } from "next-cloudinary";
+import Spinner from "@/components/BlocksSpinner";
+import { Separator } from "@/components/ui/separator";
+import { ShoppingCart } from "lucide-react";
+import { updateFavorites } from "@/actions/action";
+
+import { MdHeartBroken } from 'react-icons/md';
 
 interface ItemDetail {
   displayImage: string;
@@ -40,6 +40,8 @@ function Favorites() {
 
   const [favoritesDetails, setFavoritesDetails] = useState<ItemDetail[]>([]);
 
+  const [fetching, setFetching] = useState<boolean>(true);
+
   useEffect(() => {
     if (user === null && loading === false) {
       router.push("/login");
@@ -49,8 +51,9 @@ function Favorites() {
   useEffect(() => {
     if (user !== null)
       try {
+        setFetching(true);
         const fetchFavorites = async () => {
-          const userSnapshot = await getDoc(doc(db, "users", user.uid));
+          const userSnapshot = await getDoc(doc(db, "users", user?.uid));
           if (userSnapshot.exists()) {
             const favoritesData: string[] = userSnapshot.data().favorites;
             setFavorites(favoritesData);
@@ -82,16 +85,47 @@ function Favorites() {
         fetchFavorites();
       } catch (err) {
         console.error(err);
+      } finally {
+        setFetching(false);
       }
   }, [user]);
 
-  if (loading) {
-    return <p>loading...</p>;
+  const removeFromFavorites = async (itemId: string) => {
+    if (favorites && user?.uid && itemId) {
+      if (favorites.includes(itemId)) {
+        const temp: string[] = removeOneOccurrence([...favorites], itemId);
+        const result = await updateFavorites(temp, user?.uid);
+
+        if (result) {
+          setFavorites(temp);
+        }
+      }
+    }
+  };
+
+  const removeOneOccurrence = (array: string[], item: string): string[] => {
+    const index = array.indexOf(item);
+    if (index !== -1) {
+      array.splice(index, 1);
+    }
+    return array;
+  };
+
+  if (loading || fetching) {
+    return (
+      <div className="h-screen w-screen items-center flex justify-center">
+        <Spinner />
+      </div>
+    );
   }
 
   return (
     <div>
-      wishlist
+      <div className="flex flex-row items-center justify-center my-2 gap-4">
+        <h1 className="text-4xl font-semibold">Your Favorite Items</h1>
+        <AiFillHeart color="red" size={34} />
+      </div>
+      <Separator className="my-2" />
       <div className="flex flex-col gap-2">
         {favorites &&
           favorites.map((favorite) => {
@@ -100,9 +134,12 @@ function Favorites() {
             );
             if (!itemDetails) {
               return (
-                <p key={favorite}>
-                  There was some error. Please Reload this Page.
-                </p>
+                <div
+                  key={favorite}
+                  className="h-screen w-screen items-center flex justify-center"
+                >
+                  <Spinner />
+                </div>
               );
             }
             return (
@@ -126,11 +163,39 @@ function Favorites() {
                   </CardDescription>
                 </div>
 
-                <div className="flex flex-col ml-auto my-auto">
+                <Separator
+                  orientation="vertical"
+                  className="h-auto bg-gray-400 mr-0 ml-auto"
+                />
+                <div className="w-1/4 flex flex-col items-center justify-center ml-0">
+                  {cart.includes(favorite) && (
+                    <div className="flex flex-col items-center gap-2">
+                      <p>Item is already in your Cart</p>
+                      <ShoppingCart />
+                      <p>
+                        ( {cart.filter((item) => item === favorite).length} )
+                      </p>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => removeFromFavorites(favorite)}
+                    className={`rounded bg-red-500 p-2 hover:bg-red-600 text-white ${
+                      cart.includes(favorite) ? "mt-10" : ""
+                    }`}
+                  >
+                    Remove from Favorite
+                  </button>
                 </div>
               </Card>
             );
           })}
+          {favorites && favorites.length===0 && 
+          <div className="flex items-center justify-center h-96">
+
+            <p className="flex items-center justify-center gap-4">Nothing in Your Favorites
+            <MdHeartBroken size={36} color="red" /></p>
+          </div>
+          }
       </div>
     </div>
   );

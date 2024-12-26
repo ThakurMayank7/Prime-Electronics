@@ -16,7 +16,7 @@ import {
 import { CldImage } from "next-cloudinary";
 import { Minus, Plus } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { updateCart, updateWishlist } from "@/actions/action";
+import { updateCart, updateFavorites } from "@/actions/action";
 
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
@@ -165,15 +165,15 @@ function Cart() {
     return array;
   };
 
-  const addToWishlist = async (itemId: string) => {
+  const addToFavorites = async (itemId: string) => {
     if (itemId && user?.uid) {
-      let newWishlist: string[] = [];
+      let newFavorites: string[] = [];
       if (favorites !== undefined) {
-        newWishlist = [...favorites, itemId];
+        newFavorites = [...favorites, itemId];
       } else {
-        newWishlist = [itemId];
+        newFavorites = [itemId];
       }
-      const result = await updateWishlist(newWishlist, user?.uid);
+      const result = await updateFavorites(newFavorites, user?.uid);
 
       if (result) {
         if (favorites) {
@@ -185,11 +185,11 @@ function Cart() {
     }
   };
 
-  const removeFromWishlist = async (itemId: string) => {
+  const removeFromFavorites = async (itemId: string) => {
     if (favorites && user?.uid && itemId) {
       if (favorites.includes(itemId)) {
         const temp: string[] = removeOneOccurrence([...favorites], itemId);
-        const result = await updateWishlist(temp, user?.uid);
+        const result = await updateFavorites(temp, user?.uid);
 
         if (result) {
           setFavorites(temp);
@@ -241,11 +241,11 @@ function Cart() {
                             <AiFillHeart
                               color="red"
                               size={24}
-                              onClick={() => removeFromWishlist(cartItem.item)}
+                              onClick={() => removeFromFavorites(cartItem.item)}
                             />
                           </TooltipTrigger>
                           <TooltipContent className="bg-red-400">
-                            <p>Remove from Wishlist</p>
+                            <p>Remove from Favorites</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
@@ -256,11 +256,11 @@ function Cart() {
                             <AiOutlineHeart
                               color="red"
                               size={24}
-                              onClick={() => addToWishlist(cartItem.item)}
+                              onClick={() => addToFavorites(cartItem.item)}
                             />
                           </TooltipTrigger>
                           <TooltipContent className="bg-red-400">
-                            <p>Add to Wishlist</p>
+                            <p>Add to Favorites</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>

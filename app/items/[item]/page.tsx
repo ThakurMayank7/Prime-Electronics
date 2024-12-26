@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
-import { updateCart, updateWishlist } from "@/actions/action";
+import { updateCart, updateFavorites } from "@/actions/action";
 
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
@@ -187,7 +187,7 @@ function ItemPage() {
       } else {
         newWishlist = [itemId];
       }
-      const result = await updateWishlist(newWishlist, user?.uid);
+      const result = await updateFavorites(newWishlist, user?.uid);
 
       if (result) {
         if (favorites) {
@@ -203,7 +203,7 @@ function ItemPage() {
     if (favorites && user?.uid && itemId) {
       if (favorites.includes(itemId)) {
         const temp: string[] = removeOneOccurrence([...favorites], itemId);
-        const result = await updateWishlist(temp, user?.uid);
+        const result = await updateFavorites(temp, user?.uid);
 
         if (result) {
           setFavorites(temp);
