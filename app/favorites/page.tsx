@@ -6,6 +6,22 @@ import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { CldImage } from "next-cloudinary";
+
 interface ItemDetail {
   displayImage: string;
   itemName: string;
@@ -89,7 +105,31 @@ function Favorites() {
                 </p>
               );
             }
-            return <div key={favorite}>{itemDetails?.itemId}</div>;
+            return (
+              <Card key={favorite} className="flex flex-row p-4">
+                <CardHeader>
+                  <CldImage
+                    src={itemDetails.displayImage || "samples/balloons"}
+                    width="300"
+                    height="300"
+                    alt={itemDetails.itemName}
+                    className="rounded-lg shadow-lg object-cover"
+                  />
+                </CardHeader>
+                <div className="ml-10 my-10">
+                  <CardTitle className="flex flex-row gap-4 items-center">
+                    {itemDetails.itemName}
+                  </CardTitle>
+                  <br />
+                  <CardDescription className="max-w-screen-md">
+                    {itemDetails.itemDescription}
+                  </CardDescription>
+                </div>
+
+                <div className="flex flex-col ml-auto my-auto">
+                </div>
+              </Card>
+            );
           })}
       </div>
     </div>
