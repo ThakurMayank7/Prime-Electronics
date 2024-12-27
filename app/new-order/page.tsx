@@ -101,7 +101,7 @@ function NewOrder() {
       };
       createOrder();
     }
-  }, [paymentStatus]);
+  }, [paymentStatus, address, orderItems, orders, router, user]);
 
   useEffect(() => {
     if (isCart === "true" && user !== null) {

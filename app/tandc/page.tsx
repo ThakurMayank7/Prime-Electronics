@@ -9,10 +9,10 @@ function TermsAndConditions() {
       <hr className="my-6" />
 
       <p className="mb-6">
-        Welcome to Prime Electronics! These Terms and Conditions ("Terms")
-        govern your use of our website and services. By accessing or using our
-        website, you agree to comply with these Terms. Please read them
-        carefully.
+        Welcome to Prime Electronics! These Terms and Conditions
+        (&quotTerms&quot) govern your use of our website and services. By
+        accessing or using our website, you agree to comply with these Terms.
+        Please read them carefully.
       </p>
 
       <hr className="my-6" />
