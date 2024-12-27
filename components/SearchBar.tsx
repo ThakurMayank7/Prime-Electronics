@@ -186,7 +186,7 @@ const SearchBar: React.FC = () => {
   };
 
   return (
-    <div className="text-teal-800 relative w-[300px] bg-teal-100 flex-row items-center justify-between flex rounded p-0.5">
+    <div className="text-teal-800 relative w-[300px] bg-teal-50 flex-row items-center justify-between flex rounded p-0.5">
       <input
         type="text"
         ref={inputRef}
