@@ -17,6 +17,11 @@ import React, { useEffect, useState } from "react";
 
 import AddressInputDialog from "@/components/AddressInputDialog";
 import AddressDisplay from "@/components/AddressDisplay";
+import PaymentDialog from "@/components/PaymentDialog";
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+
 interface Item {
   id: string;
   itemName: string;
@@ -64,6 +69,18 @@ function NewOrder() {
     country: "",
     deliveryInstructions: "",
   });
+
+  const [paymentStatus, setPaymentStatus] = useState<
+    "NotInitiated" | "Initiated" | "Successful" | "Failed"
+  >("NotInitiated");
+
+  const updatePaymentStatus = (
+    status: "NotInitiated" | "Initiated" | "Successful" | "Failed"
+  ) => {
+    setPaymentStatus(status);
+  };
+
+  useEffect(() => {}, [paymentStatus]);
 
   useEffect(() => {
     if (isCart === "true" && user !== null) {
@@ -182,10 +199,20 @@ function NewOrder() {
       </div>
       {address.phone !== "" && (
         <div className="flex items-center justify-center my-10">
-          <button className="bg-sky-700 text-white p-4 text-4xl rounded-xl shadow-xl border-2 border-sky-950">
-            Proceed To Payment
-          </button>
+          <PaymentDialog
+            status={paymentStatus}
+            changeStatus={updatePaymentStatus}
+          />
         </div>
+      )}
+      {paymentStatus === "Failed" && (
+        <Alert variant="destructive" className="my-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            Your session has expired. Please log in again.
+          </AlertDescription>
+        </Alert>
       )}
     </div>
   );
