@@ -15,6 +15,7 @@ import { CldImage } from "next-cloudinary";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+import AddressInputDialog from "@/components/AddressInputDialog";
 interface Item {
   id: string;
   itemName: string;
@@ -36,6 +37,8 @@ function NewOrder() {
   const [items, setItems] = useState<Item[]>([]);
 
   const [orderItems, setOrderItems] = useState<string[]>([]);
+
+  const [address, setAddress] = useState<string>();
 
   useEffect(() => {
     if (isCart === "true" && user !== null) {
@@ -143,6 +146,8 @@ function NewOrder() {
             </Card>
           ))}
       </div>
+      <br />
+      <div>{!address && <AddressInputDialog />}</div>
     </div>
   );
 }
