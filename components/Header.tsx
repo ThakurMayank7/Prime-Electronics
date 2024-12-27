@@ -41,91 +41,98 @@ function Header() {
   };
 
   return (
-    <header className="bg-pallette1 p-4 flex flex-row items-center">
-      <MobSidebar />
-      <span className="text-white font-bold text-2xl mr-auto">
-        <Link href="/">Prime Electronics</Link>
-      </span>
+    <div className="flex flex-col">
+      <header className="bg-pallette1 p-4 flex flex-row items-center">
+        <MobSidebar />
+        <span className="text-white font-bold text-2xl mr-auto">
+          <Link href="/">Prime Electronics</Link>
+        </span>
 
-      <div className="text-white mx-auto rounded p-0.5 border-2 border-pallette3 ">
-        <SearchBar />
+        <div className="text-white mx-auto rounded p-0.5 border-2 border-pallette3 sm:block hidden">
+          <SearchBar />
+        </div>
+
+        <div
+          className={`ml-auto text-white flex gap-1 mr-2 p-1 bg-pallette3 rounded-full hover:border-2`}
+        >
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Avatar className="rounded-full">
+                <AvatarImage
+                  className="rounded-full"
+                  src={user?.photoURL || "https://github.com/shadcn.png"}
+                  alt={user?.displayName?.charAt(0) ?? "N/A"}
+                />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent>
+              <ShineBorder>
+                <DropdownMenuLabel className="">
+                  <span className="text-xl flex justify-center">
+                    {user?.displayName}
+                  </span>
+                  <span className="font-thin">{user?.email}</span>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="hover:cursor-pointer">
+                  <Link href="/profile">
+                    <span className="text-lg">Profile</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="hover:cursor-pointer">
+                  <Link href="/orders">
+                    <span className="text-lg">Orders</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="hover:cursor-pointer">
+                  <Link href="/wishlist">
+                    <span className="text-lg">Wishlist</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="hover:cursor-pointer">
+                  <Link href="/cart">
+                    <span className="text-lg">Cart</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <button className="bg-red-600 p-2 rounded font-bold text-white hover:text-base">
+                        Sign Out
+                      </button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action will signout this account on this device.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          className="bg-red-600 hover:bg-red-800"
+                          onClick={signOutHandler}
+                        >
+                          Confirm Sign Out
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </DropdownMenuItem>
+              </ShineBorder>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </header>
+      <div className="block sm:hidden my-2">
+        <div className="flex items-center justify-center">
+          <SearchBar />
+        </div>
       </div>
-
-      <div
-        className={`ml-auto text-white flex gap-1 mr-2 p-1 bg-pallette3 rounded-full hover:border-2`}
-      >
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Avatar className="rounded-full">
-              <AvatarImage
-                className="rounded-full"
-                src={user?.photoURL || "https://github.com/shadcn.png"}
-                alt={user?.displayName?.charAt(0) ?? "N/A"}
-              />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent>
-            <ShineBorder>
-              <DropdownMenuLabel className="">
-                <span className="text-xl flex justify-center">
-                  {user?.displayName}
-                </span>
-                <span className="font-thin">{user?.email}</span>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="hover:cursor-pointer">
-                <Link href="/profile">
-                  <span className="text-lg">Profile</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="hover:cursor-pointer">
-                <Link href="/orders">
-                  <span className="text-lg">Orders</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="hover:cursor-pointer">
-                <Link href="/wishlist">
-                  <span className="text-lg">Wishlist</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="hover:cursor-pointer">
-                <Link href="/cart">
-                  <span className="text-lg">Cart</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <button className="bg-red-600 p-2 rounded font-bold text-white hover:text-base">
-                      Sign Out
-                    </button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action will signout this account on this device.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        className="bg-red-600 hover:bg-red-800"
-                        onClick={signOutHandler}
-                      >
-                        Confirm Sign Out
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </DropdownMenuItem>
-            </ShineBorder>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </header>
+    </div>
   );
 }
 
