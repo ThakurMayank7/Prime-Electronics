@@ -14,7 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CldImage } from "next-cloudinary";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Package, Plus } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { updateCart, updateFavorites } from "@/actions/action";
 
@@ -305,6 +305,17 @@ function Cart() {
               </Card>
             );
           })}
+        {cartItems && cartItems.length > 0 && (
+          <div className="flex items-center justify-center">
+            <button
+              onClick={() => router.push("/new-order?cart=true")}
+              className="bg-green-800 rounded shadow-lg w-fit p-4 flex items-center justify-center flex-row gap-4 text-3xl text-white font-semibold"
+            >
+              <Package />
+              Place an Order
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
