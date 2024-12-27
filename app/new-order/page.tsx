@@ -16,11 +16,25 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import AddressInputDialog from "@/components/AddressInputDialog";
+import AddressDisplay from "@/components/AddressDisplay";
 interface Item {
   id: string;
   itemName: string;
   itemDescription: string;
   displayImageRef: string;
+}
+
+interface Address {
+  fullName: "";
+  phone: "";
+  email: "";
+  streetAddress: "";
+  addressLine2: "";
+  city: "";
+  state: "";
+  postalCode: "";
+  country: "";
+  deliveryInstructions: "";
 }
 
 function NewOrder() {
@@ -32,13 +46,24 @@ function NewOrder() {
 
   const isCart = searchParams.get("cart");
 
-  const itemId = searchParams.get("itemId");
+  //   const itemId = searchParams.get("itemId");
 
   const [items, setItems] = useState<Item[]>([]);
 
   const [orderItems, setOrderItems] = useState<string[]>([]);
 
-  const [address, setAddress] = useState<string>();
+  const [address, setAddress] = useState<Address>({
+    fullName: "",
+    phone: "",
+    email: "",
+    streetAddress: "",
+    addressLine2: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    country: "",
+    deliveryInstructions: "",
+  });
 
   useEffect(() => {
     if (isCart === "true" && user !== null) {
@@ -97,6 +122,10 @@ function NewOrder() {
     }
   }, [user, router, loading]);
 
+  const updateAddress = (data: Address) => {
+    setAddress(data);
+  };
+
   if (loading) {
     return (
       <div className="h-screen w-screen items-center flex justify-center">
@@ -147,7 +176,17 @@ function NewOrder() {
           ))}
       </div>
       <br />
-      <div>{!address && <AddressInputDialog />}</div>
+      <div className="flex items-center justify-center flex-col gap-4">
+        {address.phone !== "" && <AddressDisplay {...address} />}
+        <AddressInputDialog update={updateAddress} />
+      </div>
+      {address.phone !== "" && (
+        <div className="flex items-center justify-center my-10">
+          <button className="bg-sky-700 text-white p-4 text-4xl rounded-xl shadow-xl border-2 border-sky-950">
+            Proceed To Payment
+          </button>
+        </div>
+      )}
     </div>
   );
 }
