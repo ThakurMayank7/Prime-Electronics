@@ -50,8 +50,6 @@ function NewOrder() {
 
   const searchParams = useSearchParams();
 
-  const isCart = searchParams.get("cart");
-
   //   const itemId = searchParams.get("itemId");
 
   const [items, setItems] = useState<Item[]>([]);
@@ -104,6 +102,8 @@ function NewOrder() {
   }, [paymentStatus, address, orderItems, orders, router, user]);
 
   useEffect(() => {
+    const isCart = searchParams.get("cart");
+
     if (isCart === "true" && user !== null) {
       try {
         const fetchCart = async () => {
@@ -158,7 +158,7 @@ function NewOrder() {
         console.error(error);
       }
     }
-  }, [isCart, user]);
+  }, [user]);
 
   useEffect(() => {
     if (user === null && loading === false) {
