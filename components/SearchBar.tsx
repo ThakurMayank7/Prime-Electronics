@@ -150,7 +150,11 @@ const SearchBar: React.FC = () => {
     }
 
     if (sendQuery.type !== "" && sendQuery.value !== "" && checking) {
-      router.push(`${url}?type=${sendQuery.type}&value=${sendQuery.value}`);
+      router.push(
+        `${url}?type=${sendQuery.type}&value=${sendQuery.value}&category=${
+          suggestions.filter((s) => s.value === sendQuery.value).at(0)?.display
+        }`
+      );
     } else if (query !== "") {
       const suggestItems: string[] = [];
       const suggestBrands: string[] = [];

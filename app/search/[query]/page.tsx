@@ -66,6 +66,7 @@ function SearchPage() {
   useEffect(() => {
     const type = searchParams.get("type");
     const value = searchParams.get("value");
+    const category = searchParams.get("category");
     const items = searchParams.get("items")?.split(",") || undefined;
     const brands = searchParams.get("brands")?.split(",") || undefined;
     const categories = searchParams.get("categories")?.split(",") || undefined;
@@ -78,7 +79,7 @@ function SearchPage() {
       } else if (type === "brand") {
         url = `/brands/${value}`;
       } else if (type === "category") {
-        url = `/category/${value}`;
+        url = `/categories/${value}?category=${category}`;
       }
       router.push(url);
     }
