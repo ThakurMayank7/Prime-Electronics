@@ -12,7 +12,7 @@ import { db } from "@/firebase/firebaseConfig";
 import { useAuth } from "@/hooks/useAuth";
 import { doc, getDoc } from "firebase/firestore";
 import { CldImage } from "next-cloudinary";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import AddressInputDialog from "@/components/AddressInputDialog";
@@ -47,8 +47,6 @@ function NewOrder() {
   const { user, loading } = useAuth();
 
   const router = useRouter();
-
-  const searchParams = useSearchParams();
 
   //   const itemId = searchParams.get("itemId");
 
@@ -102,9 +100,10 @@ function NewOrder() {
   }, [paymentStatus, address, orderItems, orders, router, user]);
 
   useEffect(() => {
-    const isCart = searchParams.get("cart");
-
-    if (isCart === "true" && user !== null) {
+    if (
+      // isCart === "true" &&
+      user !== null
+    ) {
       try {
         const fetchCart = async () => {
           const userSnapshot = await getDoc(doc(db, "users", user?.uid));
