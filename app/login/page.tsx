@@ -19,6 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AlertCircle } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Link from "next/link";
 
 type user = {
   uid: string;
@@ -238,7 +239,12 @@ export default function LoginPage() {
 
                 <div>
                   <Checkbox required />
-                  <span className="ml-1">Accept Terms and Conditions</span>
+                  <span className="ml-1">
+                    Accept{" "}
+                    <Link className="font-semibold" href="/tandc">
+                      Terms and Conditions
+                    </Link>
+                  </span>
                 </div>
                 <button
                   className="p-2 bg-black text-white text-lg rounded"
