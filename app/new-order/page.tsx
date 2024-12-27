@@ -80,7 +80,11 @@ function NewOrder() {
     setPaymentStatus(status);
   };
 
-  useEffect(() => {}, [paymentStatus]);
+  useEffect(() => {
+    if (paymentStatus === "Successful") {
+      router.push("/new-order/success");
+    }
+  }, [paymentStatus]);
 
   useEffect(() => {
     if (isCart === "true" && user !== null) {
@@ -193,7 +197,7 @@ function NewOrder() {
           ))}
       </div>
       <br />
-      <div className="flex items-center justify-center flex-col gap-4">
+      <div className="flex items-center justify-center flex-col gap-4 my-6">
         {address.phone !== "" && <AddressDisplay {...address} />}
         <AddressInputDialog update={updateAddress} />
       </div>

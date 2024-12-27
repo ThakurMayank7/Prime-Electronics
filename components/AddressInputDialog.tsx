@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -42,6 +41,8 @@ function AddressInputDialog({ update }: DialogProps) {
     deliveryInstructions: "",
   });
 
+  const [open, setOpen] = useState<boolean>(false);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -57,24 +58,28 @@ function AddressInputDialog({ update }: DialogProps) {
     // Add your form submission logic here
 
     update(formData);
+    setOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog open={open}>
       <DialogTrigger asChild>
-        <button className="bg-cyan-400 text-white rounded-lg p-4 shadow-lg border-2 border-cyan-900 hover:bg-cyan-600 text-lg">
+        <button
+          className="bg-cyan-400 text-white rounded-lg p-4 shadow-lg border-2 border-cyan-900 hover:bg-cyan-600 text-lg"
+          onClick={() => setOpen(true)}
+        >
           {formData ? "Edit " : "Add "}
           Delivery Details
         </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg w-full bg-white p-6 rounded-lg shadow-lg">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>Address Form</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you are done.
+            Add the delivery details for the location you want your items to be
+            delivered.
           </DialogDescription>
         </DialogHeader>
-        <h3 className="text-xl font-semibold text-gray-800">Address Form</h3>
         <form
           onSubmit={handleSubmit}
           className="space-y-4 mt-4 max-h-[75vh] overflow-y-auto"
@@ -258,14 +263,13 @@ function AddressInputDialog({ update }: DialogProps) {
           </div>
 
           <div className="flex justify-end space-x-4">
-            <DialogClose asChild>
-              <button
-                type="button"
-                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-            </DialogClose>
+            <button
+              type="button"
+              className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
+              onClick={() => setOpen(false)}
+            >
+              Cancel
+            </button>
             <button
               type="submit"
               className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-md shadow-sm hover:bg-indigo-700"
