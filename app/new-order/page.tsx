@@ -21,6 +21,7 @@ import PaymentDialog from "@/components/PaymentDialog";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { createNewOrder, updateCart } from "@/actions/action";
 
 interface Item {
   id: string;
@@ -80,9 +81,25 @@ function NewOrder() {
     setPaymentStatus(status);
   };
 
+  const [orders, setOrders] = useState<string[]>([]);
+
   useEffect(() => {
-    if (paymentStatus === "Successful") {
-      router.push("/new-order/success");
+    if (paymentStatus === "Successful" && user) {
+      const createOrder = async () => {
+        const result = await createNewOrder({
+          deliveryDetails: address,
+          userId: user?.uid,
+          items: orderItems,
+          prevOrders: orders,
+        });
+        await updateCart([], user.uid);
+        if (result) {
+          router.push("/new-order/success");
+        } else {
+          updatePaymentStatus("Failed");
+        }
+      };
+      createOrder();
     }
   }, [paymentStatus]);
 
@@ -95,6 +112,12 @@ function NewOrder() {
             const userData = userSnapshot.data();
 
             const cart: string[] = userData.cartItems;
+
+            const ordersOld = userData.orders;
+
+            if (ordersOld) {
+              setOrders(ordersOld);
+            }
 
             if (cart) {
               setOrderItems(cart);

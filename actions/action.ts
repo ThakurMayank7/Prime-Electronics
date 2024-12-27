@@ -1,6 +1,7 @@
 "use server";
 
 import { adminDb } from "@/firebase/admin";
+import { Timestamp } from "firebase-admin/firestore";
 
 type user = {
   uid: string;
@@ -11,6 +12,19 @@ type user = {
   gender: string;
   photoUrl: string;
 };
+
+interface DeliveryDetails {
+  fullName: "";
+  phone: "";
+  email: "";
+  streetAddress: "";
+  addressLine2: "";
+  city: "";
+  state: "";
+  postalCode: "";
+  country: "";
+  deliveryInstructions: "";
+}
 
 export async function createNewUser(newUser: user): Promise<boolean> {
   if (!newUser.uid) {
@@ -85,6 +99,43 @@ export async function updateFavorites(
     return true;
   } catch (err) {
     console.error(err);
+    return false;
+  }
+}
+
+export async function createNewOrder({
+  deliveryDetails,
+  userId,
+  items,
+  prevOrders,
+}: {
+  deliveryDetails: DeliveryDetails;
+  userId: string;
+  items: string[];
+  prevOrders: string[];
+}): Promise<boolean> {
+  if (!deliveryDetails || !userId || !items) {
+    return false;
+  }
+  try {
+    const orderRef = await adminDb.collection("orders").add({
+      items,
+      userId,
+      deliveryDetails,
+      status: "pending",
+      createdAt: Timestamp.now(),
+    });
+    const orderId: string = orderRef.id;
+
+    const newOrders: string[] = [...prevOrders, orderId];
+
+    const userRef = adminDb.collection("users").doc(userId);
+    await userRef.update({
+      orders: newOrders,
+    });
+    return true;
+  } catch (error) {
+    console.error(error);
     return false;
   }
 }

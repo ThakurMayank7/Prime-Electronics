@@ -148,7 +148,13 @@ function ItemPage() {
 
   const addToCart = async () => {
     if (itemId && user?.uid) {
-      const result = await updateCart([...cartItems, itemId], user?.uid);
+      let newCart: string[] = [];
+      if (cartItems) {
+        newCart = [...cartItems, itemId];
+      } else {
+        newCart = [itemId];
+      }
+      const result = await updateCart(newCart, user?.uid);
       if (result) {
         if (cartItems) {
           setCartItems((prevItems) => [...prevItems, itemId]);
